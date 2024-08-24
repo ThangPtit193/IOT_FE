@@ -58,9 +58,9 @@ const Chart = () => {
     scales:{
       y: {
         min:0,
-        max: 1200,
+        max: 1000,
         ticks: {
-          stepSize: 200,
+          stepSize: 100,
           callback: (value: string | number) => value
         },
 

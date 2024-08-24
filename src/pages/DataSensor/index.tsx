@@ -71,7 +71,7 @@ const DataSensor: React.FC = () => {
   };
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid" style={{ marginTop: '-50px' }}>
       <div className="container mt-5">
         <h2 className="text-center">Table of Sensor Data</h2>
         <div className="filter-section">
