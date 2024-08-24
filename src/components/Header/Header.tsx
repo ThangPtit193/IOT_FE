@@ -49,6 +49,7 @@ const Header = () => {
                   <Nav.Link className='nav-link' href="./">HOME</Nav.Link>
                   <Nav.Link className='nav-link' href="./data-sensor">DATA SENSOR</Nav.Link>
                   <Nav.Link className='nav-link' href="./device">DEVICE</Nav.Link>
+                  <Nav.Link className='nav-link' href="./profile">PROFILE</Nav.Link>
                 </Nav>
               </Offcanvas.Body>
             </Navbar.Offcanvas>
