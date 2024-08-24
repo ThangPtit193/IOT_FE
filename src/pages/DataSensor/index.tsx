@@ -74,7 +74,7 @@ const DataSensor: React.FC = () => {
             value={searchTerm}
             onChange={handleSearchChange}
           />
-          <button className="filter-button" onClick={handleSearchClick}>Tìm kiếm</button>
+          <button className="filter-button" style={{borderRadius:'10px', background: 'linear-gradient(to right, #77A1D3 0%, #79CBCA  51%, #77A1D3  100%)'}} onClick={handleSearchClick}>Tìm kiếm</button>
         </div>
         <table className="table table-hover mt-4" id="sensorTable">
           <thead>
