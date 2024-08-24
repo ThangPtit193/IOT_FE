@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-
 interface SensorData {
   id: string;
   temperature: number;
@@ -26,8 +25,9 @@ const DataSensor: React.FC = () => {
   const [data, setData] = useState<SensorData[]>(initialData);
   const [sortConfig, setSortConfig] = useState<{ key: keyof SensorData; direction: 'asc' | 'desc' } | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(5);
 
-  // Hàm sắp xếp dữ liệu theo cột
   const sortTable = (key: keyof SensorData) => {
     let direction: 'asc' | 'desc' = 'asc';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -44,23 +44,30 @@ const DataSensor: React.FC = () => {
     setSortConfig({ key, direction });
   };
 
-  // Xử lý thay đổi đầu vào tìm kiếm
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  // Xử lý khi nhấn nút tìm kiếm
   const handleSearchClick = () => {
     setData(filterData());
+    setCurrentPage(1);
   };
 
-  // Hàm lọc dữ liệu dựa trên từ khóa tìm kiếm
   const filterData = () => {
     return initialData.filter(row =>
       Object.values(row).some(value =>
         value.toString().toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
+  };
+
+  const currentData = data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  const handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setItemsPerPage(Number(event.target.value));
+    setCurrentPage(1);
   };
 
   return (
@@ -75,6 +82,14 @@ const DataSensor: React.FC = () => {
             onChange={handleSearchChange}
           />
           <button className="filter-button" style={{borderRadius:'10px', background: 'linear-gradient(to right, #77A1D3 0%, #79CBCA  51%, #77A1D3  100%)'}} onClick={handleSearchClick}>Tìm kiếm</button>
+        </div>
+        <div className="pagination-control">
+          <label htmlFor="itemsPerPage">Số dòng trên mỗi trang: </label>
+          <select id="itemsPerPage" value={itemsPerPage} onChange={handleItemsPerPageChange}>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+          </select>
         </div>
         <table className="table table-hover mt-4" id="sensorTable">
           <thead>
@@ -92,7 +107,7 @@ const DataSensor: React.FC = () => {
                     margin: '0'
                   }}
                 >
-                  &#9650; {/* Tam giác lên */}
+                  &#9650;
                 </button>
                 <button 
                   onClick={() => sortTable('id')}
@@ -105,7 +120,7 @@ const DataSensor: React.FC = () => {
                     margin: '0'
                   }}
                 >
-                  &#9660; {/* Tam giác xuống */}
+                  &#9660;
                 </button>
               </th>
               <th scope="col">
@@ -121,7 +136,7 @@ const DataSensor: React.FC = () => {
                     margin: '0'
                   }}
                 >
-                  &#9650; {/* Tam giác lên */}
+                  &#9650;
                 </button>
                 <button 
                   onClick={() => sortTable('temperature')}
@@ -134,7 +149,7 @@ const DataSensor: React.FC = () => {
                     margin: '0'
                   }}
                 >
-                  &#9660; {/* Tam giác xuống */}
+                  &#9660;
                 </button>
               </th>
               <th scope="col">
@@ -150,7 +165,7 @@ const DataSensor: React.FC = () => {
                     margin: '0'
                   }}
                 >
-                  &#9650; {/* Tam giác lên */}
+                  &#9650;
                 </button>
                 <button 
                   onClick={() => sortTable('humidity')}
@@ -163,7 +178,7 @@ const DataSensor: React.FC = () => {
                     margin: '0'
                   }}
                 >
-                  &#9660; {/* Tam giác xuống */}
+                  &#9660;
                 </button>
               </th>
               <th scope="col">
@@ -179,7 +194,7 @@ const DataSensor: React.FC = () => {
                     margin: '0'
                   }}
                 >
-                  &#9650; {/* Tam giác lên */}
+                  &#9650;
                 </button>
                 <button 
                   onClick={() => sortTable('light')}
@@ -192,7 +207,7 @@ const DataSensor: React.FC = () => {
                     margin: '0'
                   }}
                 >
-                  &#9660; {/* Tam giác xuống */}
+                  &#9660;
                 </button>
               </th>
               <th scope="col">
@@ -208,7 +223,7 @@ const DataSensor: React.FC = () => {
                     margin: '0'
                   }}
                 >
-                  &#9650; {/* Tam giác lên */}
+                  &#9650;
                 </button>
                 <button 
                   onClick={() => sortTable('time')}
@@ -221,13 +236,13 @@ const DataSensor: React.FC = () => {
                     margin: '0'
                   }}
                 >
-                  &#9660; {/* Tam giác xuống */}
+                  &#9660;
                 </button>
               </th>
             </tr>
           </thead>
           <tbody>
-            {data.map((row, index) => (
+            {currentData.map((row, index) => (
               <tr key={index}>
                 <td>{row.id}</td>
                 <td>{row.temperature}</td>
@@ -238,6 +253,21 @@ const DataSensor: React.FC = () => {
             ))}
           </tbody>
         </table>
+        <div className="pagination-control">
+          <button 
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+            disabled={currentPage === 1}
+          >
+            Trang trước
+          </button>
+          <span>{currentPage} / {totalPages}</span>
+          <button 
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+            disabled={currentPage === totalPages}
+          >
+            Trang sau
+          </button>
+        </div>
       </div>
     </div>
   );

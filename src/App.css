@@ -53,13 +53,6 @@
 
 /* DataSenSor.css */
 
-.filter-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
 .filter-section input {
   padding: 5px;
   font-size: 16px;
@@ -81,7 +74,20 @@
   margin-bottom: 20px;
   gap: 10px; /* Tạo khoảng cách giữa input và button */
 }
+.pagination-control {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 20px;
+}
 
+.pagination-control button {
+  margin: 0 5px;
+}
+
+.pagination-control span {
+  margin: 0 10px;
+}
 /* Thêm kiểu cho bảng */
 .table {
   width: 100%;
