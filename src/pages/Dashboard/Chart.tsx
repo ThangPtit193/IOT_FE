@@ -28,7 +28,7 @@ const Chart = () => {
         label: 'Ánh sáng',
         data: [800, 780, 600, 800, 700, 500, 600],
         backgroundColor: 'transparent',
-        borderColor: '#f26c6d',
+        borderColor: '#fbc02d',
         pointBorderColor: 'transparent',
         pointBorderWidth: 4,
         tension: 0.4,
@@ -37,7 +37,7 @@ const Chart = () => {
         label: 'Nhiệt độ',
         data: [22, 25, 21, 24, 26, 23, 27],
         backgroundColor: 'transparent',
-        borderColor: '#36a2eb',
+        borderColor: '#d32f2f',
         pointBorderColor: 'transparent',
         pointBorderWidth: 4,
         tension: 0.4,
@@ -46,7 +46,7 @@ const Chart = () => {
         label: 'Độ ẩm',
         data: [60, 65, 55, 70, 66, 58, 72],
         backgroundColor: 'transparent',
-        borderColor: '#4bc0c0',
+        borderColor: '#1e88e5',
         pointBorderColor: 'transparent',
         pointBorderWidth: 4,
         tension: 0.4,
@@ -72,15 +72,15 @@ const Chart = () => {
       <div className='d-flex justify-content-between'>
         <div className='d-flex align-items-center'>
           <h3 className='text-gray-800'>Nhiệt độ</h3>
-          <div style={{width: '50px', height:'10px', backgroundColor:'#36a2eb', marginLeft: 5}}></div>
+          <div style={{width: '50px', height:'10px', backgroundColor:'#d32f2f', marginLeft: 5}}></div>
         </div>
         <div className='d-flex align-items-center'>
           <h3 className='text-gray-800'>Độ ẩm</h3>
-          <div style={{width: '50px', height:'10px', backgroundColor:'#4bc0c0', marginLeft: 5}}></div>
+          <div style={{width: '50px', height:'10px', backgroundColor:'#1e88e5', marginLeft: 5}}></div>
         </div>
         <div className='d-flex align-items-center'>
           <h3 className='text-gray-800'>Ánh sáng</h3>
-          <div style={{width: '50px', height:'10px', backgroundColor:'#f26c6d', marginLeft: 5}}></div>
+          <div style={{width: '50px', height:'10px', backgroundColor:'#fbc02d', marginLeft: 5}}></div>
         </div>
       </div>
       <Line data={data} options={options}></Line>
