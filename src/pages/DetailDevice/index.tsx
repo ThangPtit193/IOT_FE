@@ -45,7 +45,7 @@ const Device: React.FC = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <button className="filter-button" onClick={handleSearch}>
+                <button className="filter-button" onClick={handleSearch} style={{borderRadius:'10px', background: 'linear-gradient(to right, #77A1D3 0%, #79CBCA  51%, #77A1D3  100%)'}}>
                     Tìm kiếm
                 </button>
             </div>
