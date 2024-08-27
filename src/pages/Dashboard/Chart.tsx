@@ -68,7 +68,7 @@ const Chart = () => {
     }
   }
   return (
-    <div style={{width:'1000px', marginLeft:'20px' }}>
+    <div style={{width: '90%', maxWidth: '1000px', marginLeft:'20px' }}>
       <div className='d-flex justify-content-between'>
         <div className='d-flex align-items-center'>
           <h3 className='text-gray-800'>Nhiệt độ</h3>
