@@ -5,6 +5,7 @@ const Device = () => {
   const [fanOn, setFanOn] = useState(false);
   const [tvOn, setTvOn] = useState(false);
   const [lightOn, setLightOn] = useState(false);
+  // eslint-disable-next-line
   const [loading, setLoading] = useState({ fan: false, tv: false, light: false });
 
   const toggleFan = () => {
@@ -21,7 +22,7 @@ const Device = () => {
 
   const getContainerStyle = (isOn: boolean): CSSProperties => ({
     width: '300px',
-    height: '300px',
+    height: '240px',
     backgroundColor: isOn ? '#C3DBFF' : '#FFFFFF', // Xanh lam nhạt khi bật, đỏ nhạt khi tắt
     marginLeft: '20px',
     padding: '20px',
@@ -31,7 +32,8 @@ const Device = () => {
     flexDirection: 'column' as const,
     justifyContent: 'center',
     alignItems: 'center',
-    border: '1px solid #ccc',
+    // border: '1px solid #ccc',
+    boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)', // Sửa lỗi cú pháp ở đây
   });
 
   const iconStyle: CSSProperties = {
