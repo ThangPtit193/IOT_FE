@@ -6,6 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import DataSensor from './pages/DataSensor';
 import Device from './pages/DetailDevice';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Route path='/' element={<Dashboard/>}/>
       <Route path='/data-sensor' element={<DataSensor/>}/>
       <Route path='/device' element={<Device/>}/>
+      <Route path='/profile' element={<Profile/>}/>
    </Routes>
    </>
   );
