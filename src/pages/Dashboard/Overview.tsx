@@ -27,7 +27,7 @@ const Overview = () => {
                         className="progress-bar"
                         role="progressbar"
                         style={{
-                          width: '50%',
+                          width: '30%',
                           background: 'linear-gradient(to right, #ff6f61, #d32f2f)', // Gradient đỏ dần
                         }}
                         aria-valuenow={50}
@@ -100,7 +100,7 @@ const Overview = () => {
                         className="progress-bar"
                         role="progressbar"
                         style={{
-                          width: '50%',
+                          width: '30%',
                           background: 'linear-gradient(to right, #ffeb3b, #fbc02d)', // Gradient vàng dần
                         }}
                         aria-valuenow={50}

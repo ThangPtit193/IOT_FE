@@ -53,13 +53,6 @@
 
 /* DataSenSor.css */
 
-.filter-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
 .filter-section input {
   padding: 5px;
   font-size: 16px;
@@ -81,7 +74,20 @@
   margin-bottom: 20px;
   gap: 10px; /* Tạo khoảng cách giữa input và button */
 }
+.pagination-control {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 20px;
+}
 
+.pagination-control button {
+  margin: 0 5px;
+}
+
+.pagination-control span {
+  margin: 0 10px;
+}
 /* Thêm kiểu cho bảng */
 .table {
   width: 100%;
@@ -174,4 +180,40 @@
   padding: 8px;
   width: 300px;
   border: 1px solid #dee2e6;
+}
+
+/* Profile.css npm install @fortawesome/fontawesome-free */
+
+.container-fluid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.profile-cards {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 20px;
+}
+
+.profile-card {
+  background: #a7c3da;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  width: 45%;
+  padding: 40px;
+  text-align: center;
+  margin: 20px 10px;
+}
+
+.profile-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 5px solid #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin-top: -50px;
 }
