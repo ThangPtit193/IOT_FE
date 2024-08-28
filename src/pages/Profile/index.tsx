@@ -47,7 +47,7 @@ const Profile: React.FC = () => {
                         <p className="title">D21HTTT06 <strong>PTIT</strong></p>
                         <p className="email" style={{ wordBreak: 'break-word' }}>Email: <strong>thangpham19032003@gmail.com</strong></p>
                         <div className="info">
-                            <p className="info-item"><strong>B21DCCN672</strong><br />Mã nhân viên</p>
+                            <p className="info-item"><strong>B21DCCN672</strong><br />Mã sinh viên</p>
                             <p className="info-item"><strong>0922128688</strong><br />Số điện thoại</p>
                         </div>
                         <div className="d-flex">
