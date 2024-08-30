@@ -53,7 +53,7 @@ const Device: React.FC = () => {
             <table className="styled-table">
                 <thead>
                     <tr>
-                        <th>Sensor ID</th>
+                        <th>ID</th>
                         <th>Thiết bị</th>
                         <th>Hành động</th>
                         <th>Thời gian</th>

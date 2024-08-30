@@ -95,7 +95,7 @@ const DataSensor: React.FC = () => {
           <thead>
             <tr>
               <th scope="col">
-                Sensor ID
+                ID
                 <button 
                   onClick={() => sortTable('id')}
                   style={{ 

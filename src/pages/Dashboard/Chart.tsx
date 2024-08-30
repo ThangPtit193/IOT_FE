@@ -1,5 +1,7 @@
 import React from 'react'
 import {Line} from 'react-chartjs-2';
+import { baseUrl } from '../../const';
+import { DATA_SENSOR_PATH } from '../../const/path';
 import {
   Chart as ChartJs,
   LineElement,
@@ -7,7 +9,6 @@ import {
   LinearScale,
   PointElement,
   ChartOptions,
-  Legend
 } from 'chart.js'
 
 ChartJs.register(
@@ -18,15 +19,52 @@ ChartJs.register(
 
 )
 
+
 const Chart = () => {
+
+  const [humidity, setHumidity] = React.useState<number[]>([]);
+  const [temperature, setTemperature] = React.useState<number[]>([]);
+  const [light, setLight] = React.useState<number[]>([]);
+
+  let fetchOption: any = {
+    method: "GET",
+  }
+
+  const getDataSensorChart = async () => {
+    try {
+      const response = await fetch(baseUrl + DATA_SENSOR_PATH, fetchOption);
+      const responseData = await response.json();
+      const humidityData = responseData.data.map((item: any) => item.humidity);
+      const temperatureData = responseData.data.map((item: any) => item.temperature);
+      const lightData = responseData.data.map((item: any) => item.light);
+      console.log("humidityData", humidityData);
+      console.log("tem", temperatureData);
+      setHumidity(humidityData);
+      setTemperature(temperatureData);
+      setLight(lightData)
+    } catch (err: any) { 
+      console.error(err);
+    }
+  }
+
+  React.useEffect(() => {
+    // Thiết lập interval để gọi getDataSensor mỗi giây
+    const interval = setInterval(() => {
+      getDataSensorChart();
+    }, 200); // 1000ms = 1s
+  
+    // Cleanup interval khi component unmount
+    return () => clearInterval(interval);
+  }, []); // Mảng phụ thuộc trống [] đảm bảo rằng interval c
+
   const data = {
     labels: [
-      0, 2, 3, 4, 5, 6, 7, 8, 9, 10
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     ],
     datasets: [
       {
         label: 'Ánh sáng',
-        data: [800, 780, 600, 800, 700, 500, 600],
+        data: light.slice(-10),
         backgroundColor: 'transparent',
         borderColor: '#fbc02d',
         pointBorderColor: 'transparent',
@@ -35,7 +73,7 @@ const Chart = () => {
       },
       {
         label: 'Nhiệt độ',
-        data: [22, 25, 21, 24, 26, 23, 27],
+        data: temperature.slice(-10),
         backgroundColor: 'transparent',
         borderColor: '#d32f2f',
         pointBorderColor: 'transparent',
@@ -44,7 +82,7 @@ const Chart = () => {
       },
       {
         label: 'Độ ẩm',
-        data: [60, 65, 55, 70, 66, 58, 72],
+        data: humidity.slice(-10),
         backgroundColor: 'transparent',
         borderColor: '#1e88e5',
         pointBorderColor: 'transparent',
@@ -56,11 +94,12 @@ const Chart = () => {
   const options: ChartOptions<'line'> = {
     responsive: true,
     scales:{
+      
       y: {
         min:0,
-        max: 1000,
+        max: 100,
         ticks: {
-          stepSize: 100,
+          stepSize: 10,
           callback: (value: string | number) => value
         },
 

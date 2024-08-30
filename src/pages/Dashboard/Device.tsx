@@ -1,5 +1,7 @@
 import React, { useState, CSSProperties } from 'react';
 import { FaFan, FaTv, FaLightbulb, FaToggleOn, FaToggleOff } from 'react-icons/fa';
+import { baseUrl } from '../../const';
+import { DEVICE_STATE_PATH } from '../../const/path';
 
 const Device = () => {
   const [fanOn, setFanOn] = useState(false);
@@ -8,8 +10,22 @@ const Device = () => {
   // eslint-disable-next-line
   const [loading, setLoading] = useState({ fan: false, tv: false, light: false });
 
-  const toggleFan = () => {
+  const toggleFan = async () => {
     setFanOn(!fanOn);
+
+    const req = {
+      action: fanOn
+    }
+
+    let fetchOption: any = {
+      method: "PUT",
+      body: JSON.stringify(req),
+    }
+    try {
+      const response = await fetch(baseUrl + DEVICE_STATE_PATH , fetchOption);
+      const responseData = await response.json();
+      // console.log('responseData', responseData)
+    } catch (err: any) { }
   }
 
   const toggleTv = () => {
@@ -21,7 +37,7 @@ const Device = () => {
   }
 
   const getContainerStyle = (isOn: boolean): CSSProperties => ({
-    width: '300px',
+    width: '350px',
     height: '240px',
     backgroundColor: isOn ? '#C3DBFF' : '#FFFFFF', // Xanh lam nhạt khi bật, đỏ nhạt khi tắt
     marginLeft: '20px',
