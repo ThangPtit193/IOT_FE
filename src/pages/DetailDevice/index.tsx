@@ -35,13 +35,12 @@ const Device: React.FC = () => {
 
     return (
         <div className="container-fluid">
-            <h2 className="text-center">Action History</h2> {/* Căn giữa tiêu đề */}
-
+            <h2 className="text-center"></h2> {/* Căn giữa tiêu đề */}
             <div className="filter-section">
                 <input
                     type="text"
                     id="search-input"
-                    placeholder="Tìm kiếm theo thiết bị hoặc hành động"
+                    placeholder="Tìm kiếm theo thời gian"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />

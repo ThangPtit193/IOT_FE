@@ -8,40 +8,7 @@ import Light from '../../assets/svg/light.svg';
 import { baseUrl } from '../../const';
 import { DATA_SENSOR_PATH } from '../../const/path';
 
-const Overview = () => {
-  const [humidity, setHumidity] = React.useState<number>(0);
-  const [temperature, setTemperature] = React.useState<number>(0);
-  const [light, setLight] = React.useState<number>(0);
-
-  let fetchOption: any = {
-    method: "GET",
-  }
-
-  const getDataSensor = async () => {
-    try {
-      const response = await fetch(baseUrl + DATA_SENSOR_PATH, fetchOption);
-      const responseData = await response.json();
-      const latestData = responseData.data[responseData.data.length - 1];
-  
-      setTemperature(latestData.temperature);
-      setHumidity(latestData.humidity);
-      setLight(latestData.light);
-    } catch (err: any) {
-      console.error("Error fetching data:", err);
-    }
-  }
-  
-  React.useEffect(() => {
-    // Thiết lập interval để gọi getDataSensor mỗi giây
-    const interval = setInterval(() => {
-      getDataSensor();
-    }, 200); // 1000ms = 1s
-  
-    // Cleanup interval khi component unmount
-    return () => clearInterval(interval);
-  }, []); // Mảng phụ thuộc trống [] đảm bảo rằng interval chỉ được thiết lập một lần khi component mount
-  
-
+const Overview = ({ mqttData }: { mqttData: any }) => {
   return (
     <div className="row mx-2">
 
@@ -55,7 +22,7 @@ const Overview = () => {
                 </div>
                 <div className="row no-gutters align-items-center">
                   <div className="col-2" style={{ marginLeft: '12px' }}>
-                    <div className="h5 mb-0 font-weight-bold text-gray-800">{Math.ceil(temperature)}°C</div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">{Math.ceil(mqttData.temperature)}°C</div>
                   </div>
                   <div className="col-10" style={{ marginRight: '5px', width: '70%' }}>
                     <div className="progress">
@@ -91,7 +58,7 @@ const Overview = () => {
                 </div>
                 <div className="row no-gutters align-items-center">
                   <div className="col-2" style={{ marginLeft: '12px' }}>
-                    <div className="h5 mb-0 font-weight-bold text-gray-800">{Math.ceil(humidity)}%</div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">{mqttData.humidity}%</div>
                   </div>
                   <div className="col-10" style={{ marginRight: '5px', width: '70%' }}>
                     <div className="progress">
@@ -128,7 +95,7 @@ const Overview = () => {
                 </div>
                 <div className="row no-gutters align-items-center">
                   <div className="col-2" style={{ marginLeft: '12px' }}>
-                    <div className="h5 mb-0 font-weight-bold text-gray-800">{light}</div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">{mqttData.light}%</div>
                   </div>
                   <div className="col-10" style={{ marginRight: '5px', width: '70%' }}>
                     <div className="progress">

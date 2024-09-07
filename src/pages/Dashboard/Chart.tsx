@@ -1,5 +1,5 @@
 import React from 'react'
-import {Line} from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import { baseUrl } from '../../const';
 import { DATA_SENSOR_PATH } from '../../const/path';
 import {
@@ -42,7 +42,7 @@ const Chart = () => {
       setHumidity(humidityData);
       setTemperature(temperatureData);
       setLight(lightData)
-    } catch (err: any) { 
+    } catch (err: any) {
       console.error(err);
     }
   }
@@ -52,7 +52,7 @@ const Chart = () => {
     const interval = setInterval(() => {
       getDataSensorChart();
     }, 200); // 1000ms = 1s
-  
+
     // Cleanup interval khi component unmount
     return () => clearInterval(interval);
   }, []); // Mảng phụ thuộc trống [] đảm bảo rằng interval c
@@ -89,14 +89,14 @@ const Chart = () => {
         pointBorderWidth: 4,
         tension: 0.4,
       },
-  ]
+    ]
   };
   const options: ChartOptions<'line'> = {
     responsive: true,
-    scales:{
-      
+    scales: {
+
       y: {
-        min:0,
+        min: 0,
         max: 100,
         ticks: {
           stepSize: 10,
@@ -107,19 +107,19 @@ const Chart = () => {
     }
   }
   return (
-    <div style={{width: '90%', maxWidth: '1000px', marginLeft:'20px' }}>
+    <div style={{ width: '90%', maxWidth: '1000px', marginLeft: '20px' }}>
       <div className='d-flex justify-content-between'>
         <div className='d-flex align-items-center'>
           <h3 className='text-gray-800'>Nhiệt độ</h3>
-          <div style={{width: '50px', height:'10px', backgroundColor:'#d32f2f', marginLeft: 5}}></div>
+          <div style={{ width: '50px', height: '10px', backgroundColor: '#d32f2f', marginLeft: 5 }}></div>
         </div>
         <div className='d-flex align-items-center'>
           <h3 className='text-gray-800'>Độ ẩm</h3>
-          <div style={{width: '50px', height:'10px', backgroundColor:'#1e88e5', marginLeft: 5}}></div>
+          <div style={{ width: '50px', height: '10px', backgroundColor: '#1e88e5', marginLeft: 5 }}></div>
         </div>
         <div className='d-flex align-items-center'>
           <h3 className='text-gray-800'>Ánh sáng</h3>
-          <div style={{width: '50px', height:'10px', backgroundColor:'#fbc02d', marginLeft: 5}}></div>
+          <div style={{ width: '50px', height: '10px', backgroundColor: '#fbc02d', marginLeft: 5 }}></div>
         </div>
       </div>
       <Line data={data} options={options}></Line>

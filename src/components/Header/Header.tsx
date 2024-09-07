@@ -21,10 +21,10 @@ const Header = () => {
             <Navbar.Brand className='ms-3 ms-md-0'>
               <NavLink to="/">
                 <Image src={LOGO} alt="Logo" height={100} width={100} />
-                <Image src={NOTIFICATION} alt="Hello" height={100} width={400} style={{marginLeft: 30}} />
+
               </NavLink>
             </Navbar.Brand>
-              {/* End logo */}
+            {/* End logo */}
 
             {/* <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-lg`} /> */}
             <Navbar.Offcanvas
