@@ -73,11 +73,12 @@ const DataSensor: React.FC = () => {
   return (
     <div className="container-fluid" style={{ marginTop: '-50px' }}>
       <div className="container mt-5">
-        <h2 className="text-center">Table of Sensor Data</h2>
+        
         <div className="filter-section">
           <input
             type="text"
             id="search-input"
+            placeholder='Tìm kiếm theo nhiệt độ'
             value={searchTerm}
             onChange={handleSearchChange}
           />
@@ -95,7 +96,7 @@ const DataSensor: React.FC = () => {
           <thead>
             <tr>
               <th scope="col">
-                Sensor ID
+                ID
                 <button 
                   onClick={() => sortTable('id')}
                   style={{ 

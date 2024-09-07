@@ -19,7 +19,7 @@ const Header = () => {
             {/* Logo */}
             <Navbar.Brand className='ms-3 ms-md-0'>
               <NavLink to="/">
-                <Image src={LOGO} alt="Logo" height={150} width={150} />
+                <Image src={LOGO} alt="Logo" height={100} width={100} />
 
               </NavLink>
             </Navbar.Brand>

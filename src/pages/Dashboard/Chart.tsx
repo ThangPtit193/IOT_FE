@@ -18,7 +18,10 @@ ChartJs.register(
 
 )
 
-const Chart = () => {
+const Chart = ({dataSensor}: {dataSensor: any}) => {
+  const lightData = dataSensor.map((sensor: any) => sensor.light).slice(-10);
+  const temperatureData = dataSensor.map((sensor: any) => sensor.temperature).slice(-10);
+  const humidityData = dataSensor.map((sensor: any) => sensor.humidity).slice(-10);
   const data = {
     labels: [
       0, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -26,7 +29,7 @@ const Chart = () => {
     datasets: [
       {
         label: 'Ánh sáng',
-        data: [800, 780, 600, 800, 700, 500, 600],
+        data: lightData,
         backgroundColor: 'transparent',
         borderColor: '#fbc02d',
         pointBorderColor: 'transparent',
@@ -35,7 +38,7 @@ const Chart = () => {
       },
       {
         label: 'Nhiệt độ',
-        data: [22, 25, 21, 24, 26, 23, 27],
+        data: temperatureData,
         backgroundColor: 'transparent',
         borderColor: '#d32f2f',
         pointBorderColor: 'transparent',
@@ -44,7 +47,7 @@ const Chart = () => {
       },
       {
         label: 'Độ ẩm',
-        data: [60, 65, 55, 70, 66, 58, 72],
+        data: humidityData,
         backgroundColor: 'transparent',
         borderColor: '#1e88e5',
         pointBorderColor: 'transparent',
@@ -58,9 +61,9 @@ const Chart = () => {
     scales:{
       y: {
         min:0,
-        max: 1000,
+        max: 100,
         ticks: {
-          stepSize: 100,
+          stepSize: 5,
           callback: (value: string | number) => value
         },
 

@@ -5,7 +5,7 @@ import Humidity from '../../assets/svg/humidity.svg'
 import Heat from '../../assets/svg/heat.svg';
 import Light from '../../assets/svg/light.svg';
 
-const Overview = () => {
+const Overview = ({mqttData}: {mqttData: any}) => {
   return (
     <div className="row mx-2">
 
@@ -19,7 +19,7 @@ const Overview = () => {
                 </div>
                 <div className="row no-gutters align-items-center">
                   <div className="col-2" style={{ marginLeft: '12px' }}>
-                    <div className="h5 mb-0 font-weight-bold text-gray-800">30°C</div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">{Math.ceil(mqttData.temperature)}°C</div>
                   </div>
                   <div className="col-10" style={{ marginRight: '5px', width: '70%' }}>
                     <div className="progress">
@@ -55,7 +55,7 @@ const Overview = () => {
                 </div>
                 <div className="row no-gutters align-items-center">
                   <div className="col-2" style={{ marginLeft: '12px' }}>
-                    <div className="h5 mb-0 font-weight-bold text-gray-800">50%</div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">{mqttData.humidity}%</div>
                   </div>
                   <div className="col-10" style={{ marginRight: '5px', width: '70%' }}>
                     <div className="progress">
@@ -92,7 +92,7 @@ const Overview = () => {
                 </div>
                 <div className="row no-gutters align-items-center">
                   <div className="col-2" style={{ marginLeft: '12px' }}>
-                    <div className="h5 mb-0 font-weight-bold text-gray-800">30</div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">{mqttData.light}%</div>
                   </div>
                   <div className="col-10" style={{ marginRight: '5px', width: '70%' }}>
                     <div className="progress">
