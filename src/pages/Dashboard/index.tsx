@@ -46,7 +46,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const client = mqtt.connect(connectUrl, options);
-    client.on('connect', function() {
+    client.on('connect', function () {
       // Subscribe to topics
       client.subscribe([topicSensor, topicLight]);
     });
@@ -70,12 +70,12 @@ const Dashboard = () => {
             humidity: data.humidity,
             light: data.light,
           });
-          const newDataEntry = { 
-            temperature: data.temperature, 
-            humidity: data.humidity, 
-            light: data.light 
+          const newDataEntry = {
+            temperature: data.temperature,
+            humidity: data.humidity,
+            light: data.light
           };
-          
+
           setDataSensor((prevData) => [...prevData, newDataEntry]);
           data = {
             temperature: null,
@@ -95,7 +95,7 @@ const Dashboard = () => {
       <Overview mqttData={mqttData} />
       <div className='d-md-flex'>
         <Chart dataSensor={dataSensor} />
-        <Device/>
+        <Device />
       </div>
     </div>
   );

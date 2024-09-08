@@ -7,6 +7,7 @@ import Light from '../../assets/svg/light.svg';
 
 import { baseUrl } from '../../const';
 import { DATA_SENSOR_PATH } from '../../const/path';
+import { Colors } from 'chart.js';
 
 const Overview = ({ mqttData }: { mqttData: any }) => {
   return (
@@ -95,7 +96,7 @@ const Overview = ({ mqttData }: { mqttData: any }) => {
                 </div>
                 <div className="row no-gutters align-items-center">
                   <div className="col-2" style={{ marginLeft: '12px' }}>
-                    <div className="h5 mb-0 font-weight-bold text-gray-800">{mqttData.light}%</div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">{mqttData.light}lux</div>
                   </div>
                   <div className="col-10" style={{ marginRight: '5px', width: '70%' }}>
                     <div className="progress">

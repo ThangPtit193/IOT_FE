@@ -1,7 +1,5 @@
 import React from 'react'
 import { Line } from 'react-chartjs-2';
-import { baseUrl } from '../../const';
-import { DATA_SENSOR_PATH } from '../../const/path';
 import {
   Chart as ChartJs,
   LineElement,
@@ -9,6 +7,7 @@ import {
   LinearScale,
   PointElement,
   ChartOptions,
+  Legend
 } from 'chart.js'
 
 ChartJs.register(
@@ -16,94 +15,83 @@ ChartJs.register(
   CategoryScale,
   LinearScale,
   PointElement,
-
 )
 
-
-const Chart = () => {
-
-  const [humidity, setHumidity] = React.useState<number[]>([]);
-  const [temperature, setTemperature] = React.useState<number[]>([]);
-  const [light, setLight] = React.useState<number[]>([]);
-
-  let fetchOption: any = {
-    method: "GET",
-  }
-
-  const getDataSensorChart = async () => {
-    try {
-      const response = await fetch(baseUrl + DATA_SENSOR_PATH, fetchOption);
-      const responseData = await response.json();
-      const humidityData = responseData.data.map((item: any) => item.humidity);
-      const temperatureData = responseData.data.map((item: any) => item.temperature);
-      const lightData = responseData.data.map((item: any) => item.light);
-      console.log("humidityData", humidityData);
-      console.log("tem", temperatureData);
-      setHumidity(humidityData);
-      setTemperature(temperatureData);
-      setLight(lightData)
-    } catch (err: any) {
-      console.error(err);
-    }
-  }
-
-  React.useEffect(() => {
-    // Thiết lập interval để gọi getDataSensor mỗi giây
-    const interval = setInterval(() => {
-      getDataSensorChart();
-    }, 200); // 1000ms = 1s
-
-    // Cleanup interval khi component unmount
-    return () => clearInterval(interval);
-  }, []); // Mảng phụ thuộc trống [] đảm bảo rằng interval c
-
+const Chart = ({ dataSensor }: { dataSensor: any }) => {
+  const lightData = dataSensor.map((sensor: any) => sensor.light).slice(-10);
+  const temperatureData = dataSensor.map((sensor: any) => sensor.temperature).slice(-10);
+  const humidityData = dataSensor.map((sensor: any) => sensor.humidity).slice(-10);
   const data = {
     labels: [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     ],
     datasets: [
       {
         label: 'Ánh sáng',
-        data: light.slice(-10),
+        data: lightData,
         backgroundColor: 'transparent',
         borderColor: '#fbc02d',
         pointBorderColor: 'transparent',
         pointBorderWidth: 4,
         tension: 0.4,
+        yAxisID: 'y1',
+        xAxisID: 'x1',
       },
       {
         label: 'Nhiệt độ',
-        data: temperature.slice(-10),
+        data: temperatureData,
         backgroundColor: 'transparent',
         borderColor: '#d32f2f',
         pointBorderColor: 'transparent',
         pointBorderWidth: 4,
         tension: 0.4,
+        yAxisID: 'y',
       },
       {
         label: 'Độ ẩm',
-        data: humidity.slice(-10),
+        data: humidityData,
         backgroundColor: 'transparent',
         borderColor: '#1e88e5',
         pointBorderColor: 'transparent',
         pointBorderWidth: 4,
         tension: 0.4,
+        yAxisID: 'y',
       },
     ]
   };
   const options: ChartOptions<'line'> = {
     responsive: true,
     scales: {
-
       y: {
         min: 0,
-        max: 100,
+        max: 120,
         ticks: {
-          stepSize: 10,
-          callback: (value: string | number) => value
+          stepSize: 20,
+          callback: (value: string | number) => value,
         },
-
-      }
+        position: 'left',
+      },
+      y1: {
+        min: 0,
+        max: 1200,
+        ticks: {
+          stepSize: 200,
+          callback: (value: string | number) => value,
+        },
+        position: 'right',
+        grid: {
+          drawOnChartArea: false, // Không hiển thị lưới cho trục này
+        },
+      },
+      x: {
+        reverse: false, // Bình thường cho nhiệt độ và độ ẩm
+      },
+      x1: {
+        reverse: true, // Đảo ngược trục x cho ánh sáng
+        grid: {
+          drawOnChartArea: false, // Không hiển thị lưới cho trục x1
+        },
+      },
     }
   }
   return (
