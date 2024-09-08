@@ -23,7 +23,7 @@ const Chart = ({ dataSensor }: { dataSensor: any }) => {
   const humidityData = dataSensor.map((sensor: any) => sensor.humidity).slice(-10);
   const data = {
     labels: [
-      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9
     ],
     datasets: [
       {
