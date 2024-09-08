@@ -18,7 +18,7 @@ const Overview = ({ mqttData }: { mqttData: any }) => {
           <div className="card-body">
             <div className="row no-gutters align-items-center">
               <div className="col mr-2">
-                <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                <div className="text-xs font-weight-bold text-uppercase mb-1" style={{ color: '#d32f2f' }}>
                   Nhiệt độ
                 </div>
                 <div className="row no-gutters align-items-center">
