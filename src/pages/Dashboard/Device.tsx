@@ -106,7 +106,7 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
   };
 
   const getContainerStyle = (isOn: boolean): CSSProperties => ({
-    width: '350px',
+    width: '300px',
     height: '240px',
     backgroundColor: isOn ? '#C3DBFF' : '#FFFFFF',
     marginLeft: '20px',
@@ -131,48 +131,49 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
   };
 
   return (
-    <div className='row d-flex justify-content-center' style={{ gap: '20px' }}>
-      {/* Fan */}
-      <div style={getContainerStyle(fanOn)}>
-        <h4 style={{ color: '#284680' }}>Quạt</h4>
-        <div style={{ width: '100px', height: '100px', backgroundColor: '#3E7EF7', borderRadius: '16px' }} className='d-flex justify-content-center align-items-center'>
-          <FaFan style={{ ...iconStyle, ...fanStyle, color: '#fff' }} />
-        </div>
-        <div
-          onClick={() => toggleDevice('fan', fanOn)}
-          style={{ ...buttonStyle, color: fanOn ? '#fff' : '#6c757d' }}
-        >
-          {loading.fan ? <div className="spinner"></div> : (fanOn ? <FaToggleOn /> : <FaToggleOff />)}
-        </div>
-      </div>
-
-      {/* TV */}
-      <div style={getContainerStyle(tvOn)}>
-        <h4 style={{ color: '#284680' }}>Tivi</h4>
-        <div style={{ width: '100px', height: '100px', backgroundColor: '#3E7EF7', borderRadius: '16px' }} className='d-flex justify-content-center align-items-center'>
-          <FaTv style={{ ...iconStyle, color: '#fff' }} />
-        </div>
-        <div
-          onClick={() => toggleDevice('tv', tvOn)}
-          style={{ ...buttonStyle, color: tvOn ? '#fff' : '#6c757d' }}
-        >
-          {loading.tv ? <div className="spinner"></div> : (tvOn ? <FaToggleOn /> : <FaToggleOff />)}
-        </div>
-      </div>
-
-      {/* Light Bulb */}
-      <div style={getContainerStyle(bulbOn)}>  {/* Updated the style reference */}
-        <h4 style={{ color: '#284680' }}>Bóng đèn</h4>
-        <div style={{ width: '100px', height: '100px', backgroundColor: '#3E7EF7', borderRadius: '16px' }} className='d-flex justify-content-center align-items-center'>
-          <FaLightbulb style={{ ...iconStyle, color: '#fff' }} />
-        </div>
-        <div
-          onClick={() => toggleDevice('bulb', bulbOn)}
-          style={{ ...buttonStyle, color: bulbOn ? '#fff' : '#6c757d' }}
-        >
-          {loading.bulb ? <div className="spinner"></div> : (bulbOn ? <FaToggleOn /> : <FaToggleOff />)}
-        </div>
-      </div>
+    <div>
+      {devices.map((device) => {
+        let Icon;
+        switch (device.name.toLowerCase()) {
+          case 'fan':
+            Icon = FaFan;
+            break;
+          case 'tv':
+            Icon = FaTv;
+            break;
+          case 'bulb':
+            Icon = FaLightbulb;
+            break;
+          default:
+            Icon = FaFan; // Default icon
+        }
+        return (
+          <div style={getContainerStyle(deviceStates[device._id])} key={device._id}>
+            <h4 style={{ color: '#284680' }}>{device.name}</h4>
+            <div
+              style={{
+                width: '100px',
+                height: '100px',
+                backgroundColor: '#3E7EF7',
+                borderRadius: '16px'
+              }}
+              className='d-flex justify-content-center align-items-center'
+            >
+              <Icon style={{ ...iconStyle, color: '#fff' }} />
+            </div>
+            <div
+              onClick={() => toggleDevice(device._id, device.name)}
+              style={{ ...buttonStyle, color: deviceStates[device._id] ? '#fff' : '#6c757d' }}
+            >
+              {loading[device._id] ? (
+                <div className="spinner"></div>
+              ) : (
+                deviceStates[device._id] ? <FaToggleOn /> : <FaToggleOff />
+              )}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };

@@ -9,6 +9,9 @@ export const sendDataToDatabase = async (data: SensorData) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/data/create`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Thêm header này
+      },
       body: JSON.stringify(data),
     });
 
@@ -23,11 +26,15 @@ export const sendDataToDatabase = async (data: SensorData) => {
     throw error;
   }
 };
+
 export const saveHistoryToDatabase = async (history: HistorySchema) => {
   console.log("data", JSON.stringify(history))
   try {
     const response = await fetch(`${API_BASE_URL}/api/data/history-action`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Thêm header này
+      },
       body: JSON.stringify(history),
     });
 

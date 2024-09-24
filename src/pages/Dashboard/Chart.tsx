@@ -7,7 +7,6 @@ import {
   LinearScale,
   PointElement,
   ChartOptions,
-  Legend
 } from 'chart.js'
 
 ChartJs.register(

@@ -1,4 +1,3 @@
-// Dashboard.tsx
 import React, { useState, useEffect } from 'react';
 import Overview from './Overview';
 import Chart from './Chart';
@@ -18,48 +17,15 @@ const Dashboard = () => {
   const [devices, setDevices] = useState<DeviceSchema[]>([])
 
   useEffect(() => {
-    const client = mqtt.connect(connectUrl, options);
-    client.on('connect', function () {
-      // Subscribe to topics
-      client.subscribe([topicSensor, topicLight]);
+
+
+    initializeMqttClient((newData) => {
+      setMqttData(newData);
+      setDataSensor((prevData) => [...prevData, newData]);
     });
 
-    client.on('message', async (topic, message) => {
-      try {
-        const payload = JSON.parse(message.toString());
-        if (topic === topicSensor) {
-          // Update data with sensor information
-          data.humidity = payload.humidity;
-          data.temperature = payload.temperature;
+    getDevices();
 
-        } else if (topic === topicLight) {
-          data.light = payload.percent;
-        }
-
-        // Reset data if all values are received
-        if (data.temperature !== null && data.humidity !== null && data.light !== null) {
-          setMqttData({
-            temperature: data.temperature,
-            humidity: data.humidity,
-            light: data.light,
-          });
-          const newDataEntry = {
-            temperature: data.temperature,
-            humidity: data.humidity,
-            light: data.light
-          };
-
-          setDataSensor((prevData) => [...prevData, newDataEntry]);
-          data = {
-            temperature: null,
-            humidity: null,
-            light: null
-          };
-        }
-      } catch (error) {
-        console.error('Error parsing message:', error);
-      }
-    });
 
   }, []);
 
@@ -84,7 +50,7 @@ const Dashboard = () => {
       <Overview mqttData={mqttData} />
       <div className='d-md-flex'>
         <Chart dataSensor={dataSensor} />
-        <Device />
+        <Device devices={devices} />
       </div>
     </div>
   );

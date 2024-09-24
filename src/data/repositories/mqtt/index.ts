@@ -32,24 +32,25 @@ export const initializeMqttClient = (onDataReceived: (data: SensorData) => void)
     light: null,
   };
 
-  client.on('connect', function() {
+  client.on('connect', function () {
     client.subscribe([topicSensor, topicLight]);
   });
 
-  client.on('message', async (topic, message) =>{
+  client.on('message', async (topic, message) => {
     try {
       const payload = JSON.parse(message.toString());
+      // console.log("payload", payload)
       if (topic === topicSensor) {
         data.humidity = payload.humidity;
         data.temperature = payload.temperature;
       } else if (topic === topicLight) {
-        data.light = payload.percent;
+        data.light = payload.lux;
       }
 
       if (data.temperature !== null && data.humidity !== null && data.light !== null) {
         onDataReceived({ ...data });
         // try {
-        //   await sendDataToDatabase({...data});
+        //   await sendDataToDatabase({ ...data });
         //   console.log('Data sent to database successfully');
         // } catch (error) {
         //   console.error('Failed to send data to database:', error);
