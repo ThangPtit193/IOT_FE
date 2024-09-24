@@ -54,13 +54,14 @@ const Dashboard = () => {
     client.on('message', async (topic, message) => {
       try {
         const payload = JSON.parse(message.toString());
+        // console.log("payload", payload)
         if (topic === topicSensor) {
           // Update data with sensor information
           data.humidity = payload.humidity;
           data.temperature = payload.temperature;
 
         } else if (topic === topicLight) {
-          data.light = payload.percent;
+          data.light = payload.lux;
         }
 
         // Reset data if all values are received
