@@ -2,6 +2,7 @@ import React from 'react'
 import { Button, Container, Nav, Navbar, NavDropdown, Offcanvas, Row, Image } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 import LOGO from '../../assets/images/logo.png';
+import NOTIFICATION from '../../assets/images/header.png'
 
 const Header = () => {
 
@@ -19,11 +20,11 @@ const Header = () => {
             {/* Logo */}
             <Navbar.Brand className='ms-3 ms-md-0'>
               <NavLink to="/">
-                <Image src={LOGO} alt="Logo" height={150} width={150} />
+                <Image src={LOGO} alt="Logo" height={100} width={100} />
 
               </NavLink>
             </Navbar.Brand>
-              {/* End logo */}
+            {/* End logo */}
 
             {/* <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-lg`} /> */}
             <Navbar.Offcanvas

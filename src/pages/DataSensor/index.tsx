@@ -9,15 +9,15 @@ interface SensorData {
 }
 
 const initialData: SensorData[] = [
-  { id: 'packetId5449', temperature: 28, humidity: 77, light: 686, time: '18:10:45 - 12/08/2024' },
+  { id: 'packetId5449', temperature: 27, humidity: 77, light: 686, time: '18:10:45 - 12/08/2024' },
   { id: 'packetId5450', temperature: 28, humidity: 77, light: 686, time: '18:10:48 - 12/08/2024' },
-  { id: 'packetId5451', temperature: 28, humidity: 77, light: 686, time: '18:20:43 - 12/08/2024' },
-  { id: 'packetId5452', temperature: 28, humidity: 77, light: 686, time: '18:10:43 - 11/08/2024' },
-  { id: 'packetId5453', temperature: 58, humidity: 75, light: 656, time: '18:10:43 - 12/08/2024' },
-  { id: 'packetId5455', temperature: 28, humidity: 76, light: 886, time: '18:10:43 - 12/08/2024' },
-  { id: 'packetId5457', temperature: 28, humidity: 77, light: 686, time: '18:10:43 - 12/08/2024' },
-  { id: 'packetId5449', temperature: 28, humidity: 77, light: 686, time: '18:10:43 - 12/08/2024' },
-  { id: 'packetId5449', temperature: 28, humidity: 77, light: 686, time: '18:10:43 - 12/08/2024' },
+  { id: 'packetId5451', temperature: 29, humidity: 77, light: 686, time: '18:20:43 - 12/08/2024' },
+  { id: 'packetId5452', temperature: 30, humidity: 77, light: 686, time: '18:10:43 - 11/08/2024' },
+  { id: 'packetId5453', temperature: 40, humidity: 75, light: 656, time: '18:10:43 - 12/08/2024' },
+  { id: 'packetId5455', temperature: 32, humidity: 76, light: 886, time: '18:10:43 - 12/08/2024' },
+  { id: 'packetId5457', temperature: 20, humidity: 77, light: 686, time: '18:10:43 - 12/08/2024' },
+  { id: 'packetId5449', temperature: 24, humidity: 77, light: 686, time: '18:10:43 - 12/08/2024' },
+  { id: 'packetId5449', temperature: 25, humidity: 77, light: 686, time: '18:10:43 - 12/08/2024' },
   { id: 'packetId5458', temperature: 28, humidity: 79, light: 676, time: '18:10:43 - 12/08/2024' }
 ];
 
@@ -73,15 +73,16 @@ const DataSensor: React.FC = () => {
   return (
     <div className="container-fluid" style={{ marginTop: '-50px' }}>
       <div className="container mt-5">
-        <h2 className="text-center">Table of Sensor Data</h2>
+
         <div className="filter-section">
           <input
             type="text"
             id="search-input"
+            placeholder='Tìm kiếm theo nhiệt độ'
             value={searchTerm}
             onChange={handleSearchChange}
           />
-          <button className="filter-button" style={{borderRadius:'10px', background: 'linear-gradient(to right, #77A1D3 0%, #79CBCA  51%, #77A1D3  100%)'}} onClick={handleSearchClick}>Tìm kiếm</button>
+          <button className="filter-button" style={{ borderRadius: '10px', background: 'linear-gradient(to right, #77A1D3 0%, #79CBCA  51%, #77A1D3  100%)' }} onClick={handleSearchClick}>Tìm kiếm</button>
         </div>
         <div className="pagination-control">
           <label htmlFor="itemsPerPage">Số dòng trên mỗi trang: </label>
@@ -95,27 +96,27 @@ const DataSensor: React.FC = () => {
           <thead>
             <tr>
               <th scope="col">
-                Sensor ID
-                <button 
+                ID
+                <button
                   onClick={() => sortTable('id')}
-                  style={{ 
-                    border: 'none', 
-                    background: 'none', 
-                    cursor: 'pointer', 
-                    fontSize: '16px', 
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    fontSize: '16px',
                     padding: '0',
                     margin: '0'
                   }}
                 >
                   &#9650;
                 </button>
-                <button 
+                <button
                   onClick={() => sortTable('id')}
-                  style={{ 
-                    border: 'none', 
-                    background: 'none', 
-                    cursor: 'pointer', 
-                    fontSize: '16px', 
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    fontSize: '16px',
                     padding: '0',
                     margin: '0'
                   }}
@@ -125,26 +126,26 @@ const DataSensor: React.FC = () => {
               </th>
               <th scope="col">
                 Nhiệt độ(°C)
-                <button 
+                <button
                   onClick={() => sortTable('temperature')}
-                  style={{ 
-                    border: 'none', 
-                    background: 'none', 
-                    cursor: 'pointer', 
-                    fontSize: '16px', 
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    fontSize: '16px',
                     padding: '0',
                     margin: '0'
                   }}
                 >
                   &#9650;
                 </button>
-                <button 
+                <button
                   onClick={() => sortTable('temperature')}
-                  style={{ 
-                    border: 'none', 
-                    background: 'none', 
-                    cursor: 'pointer', 
-                    fontSize: '16px', 
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    fontSize: '16px',
                     padding: '0',
                     margin: '0'
                   }}
@@ -154,26 +155,26 @@ const DataSensor: React.FC = () => {
               </th>
               <th scope="col">
                 Độ ẩm (%)
-                <button 
+                <button
                   onClick={() => sortTable('humidity')}
-                  style={{ 
-                    border: 'none', 
-                    background: 'none', 
-                    cursor: 'pointer', 
-                    fontSize: '16px', 
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    fontSize: '16px',
                     padding: '0',
                     margin: '0'
                   }}
                 >
                   &#9650;
                 </button>
-                <button 
+                <button
                   onClick={() => sortTable('humidity')}
-                  style={{ 
-                    border: 'none', 
-                    background: 'none', 
-                    cursor: 'pointer', 
-                    fontSize: '16px', 
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    fontSize: '16px',
                     padding: '0',
                     margin: '0'
                   }}
@@ -183,26 +184,26 @@ const DataSensor: React.FC = () => {
               </th>
               <th scope="col">
                 Ánh sáng (Lux)
-                <button 
+                <button
                   onClick={() => sortTable('light')}
-                  style={{ 
-                    border: 'none', 
-                    background: 'none', 
-                    cursor: 'pointer', 
-                    fontSize: '16px', 
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    fontSize: '16px',
                     padding: '0',
                     margin: '0'
                   }}
                 >
                   &#9650;
                 </button>
-                <button 
+                <button
                   onClick={() => sortTable('light')}
-                  style={{ 
-                    border: 'none', 
-                    background: 'none', 
-                    cursor: 'pointer', 
-                    fontSize: '16px', 
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    fontSize: '16px',
                     padding: '0',
                     margin: '0'
                   }}
@@ -212,26 +213,26 @@ const DataSensor: React.FC = () => {
               </th>
               <th scope="col">
                 Thời gian
-                <button 
+                <button
                   onClick={() => sortTable('time')}
-                  style={{ 
-                    border: 'none', 
-                    background: 'none', 
-                    cursor: 'pointer', 
-                    fontSize: '16px', 
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    fontSize: '16px',
                     padding: '0',
                     margin: '0'
                   }}
                 >
                   &#9650;
                 </button>
-                <button 
+                <button
                   onClick={() => sortTable('time')}
-                  style={{ 
-                    border: 'none', 
-                    background: 'none', 
-                    cursor: 'pointer', 
-                    fontSize: '16px', 
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    fontSize: '16px',
                     padding: '0',
                     margin: '0'
                   }}
@@ -254,15 +255,15 @@ const DataSensor: React.FC = () => {
           </tbody>
         </table>
         <div className="pagination-control">
-          <button 
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
           >
             Trang trước
           </button>
           <span>{currentPage} / {totalPages}</span>
-          <button 
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+          <button
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
           >
             Trang sau
