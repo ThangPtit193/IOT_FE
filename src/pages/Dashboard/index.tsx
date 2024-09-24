@@ -1,48 +1,21 @@
+// Dashboard.tsx
 import React, { useState, useEffect } from 'react';
 import Overview from './Overview';
 import Chart from './Chart';
-import Device from './Device';
-import mqtt from 'mqtt';
-
-const host = '667e33c453fe4f028d4486b0f821713b.s1.eu.hivemq.cloud'; // ví dụ: 1234abcd.s2.eu.hivemq.cloud
-const port = 8884;
-const clientId = `mqttjs_${Math.random().toString(16).substr(2, 8)}`;
-const connectUrl = `wss://${host}:${port}/mqtt`;
-const topicSensor = "Data_Sensor";
-const topicLight = "Light";
-
-const options = {
-  clientId,
-  username: 'songcuon123',
-  password: 'songcuon123',
-  clean: true,
-  reconnectPeriod: 1000,
-  connectTimeout: 30 * 1000,
-};
-
-interface SensorData {
-  temperature: number | null;
-  humidity: number | null;
-  light: number | null;
-}
-
-// Initialize data with the correct structure
-let data: SensorData = {
-  temperature: null,
-  humidity: null,
-  light: null,
-};
+import Device, { DeviceSchema } from './Device';
+import { initializeMqttClient, SensorData } from '../../data/repositories/mqtt';
 
 const Dashboard = () => {
 
-  const [mqttData, setMqttData] = React.useState<SensorData>({
+  const [mqttData, setMqttData] = useState<SensorData>({
     temperature: null,
     humidity: null,
     light: null
-  })
+  });
 
   const [dataSensor, setDataSensor] = useState<SensorData[]>([]);
 
+  const [devices, setDevices] = useState<DeviceSchema[]>([])
 
   useEffect(() => {
     const client = mqtt.connect(connectUrl, options);
@@ -54,14 +27,13 @@ const Dashboard = () => {
     client.on('message', async (topic, message) => {
       try {
         const payload = JSON.parse(message.toString());
-        // console.log("payload", payload)
         if (topic === topicSensor) {
           // Update data with sensor information
           data.humidity = payload.humidity;
           data.temperature = payload.temperature;
 
         } else if (topic === topicLight) {
-          data.light = payload.lux;
+          data.light = payload.percent;
         }
 
         // Reset data if all values are received
@@ -90,6 +62,22 @@ const Dashboard = () => {
     });
 
   }, []);
+
+  const getDevices = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/data/get-device');
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log(data); // Hiển thị dữ liệu nhận được
+      setDevices(data.data);
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+  };
 
   return (
     <div>
