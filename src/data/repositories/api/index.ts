@@ -68,3 +68,33 @@ export const sendStateToDatabase = async (device: DeviceSchema) => {
     throw error;
   }
 }
+
+export const getDataByType = async ({ content, searchBy, orderBy, sortBy, page, pageSize }: { content: any, searchBy: any, orderBy: any, sortBy: any, page: any, pageSize: any }) => {
+  try {
+    // Tạo URL với query string từ các tham số
+    const queryParams = new URLSearchParams({
+      content,
+      searchBy,
+      orderBy,
+      sortBy,
+      page,
+      pageSize,
+    }).toString();
+
+    const response = await fetch(`${API_BASE_URL}/api/data/table-data?${queryParams}`, {
+      method: 'GET',
+    });
+
+    // Kiểm tra nếu yêu cầu không thành công
+    if (!response.ok) {
+      throw new Error(`Network response was not ok. Status: ${response.status}`);
+    }
+
+    // Chuyển đổi phản hồi thành JSON
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching data from API:', error);
+    throw error;
+  }
+};

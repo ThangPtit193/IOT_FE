@@ -1,50 +1,66 @@
 import React, { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const Device: React.FC = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filteredData, setFilteredData] = useState([
+    const [startDateTime, setStartDateTime] = useState<Date | null>(null);
+    const [endDateTime, setEndDateTime] = useState<Date | null>(null);
+    const [filteredData, setFilteredData] = useState<any[]>([]);
+    const originalData = [
         { id: 'packetId63', device: 'Đèn', action: 'Tắt', time: '15:53:35 - 12/09/2024' },
         { id: 'packetId38', device: 'Đèn', action: 'Bật', time: '16:53:32 - 12/09/2024' },
         { id: 'packetId63', device: 'Quạt', action: 'Tắt', time: '17:53:35 - 12/10/2024' },
         { id: 'packetId38', device: 'Quạt', action: 'Bật', time: '18:53:32 - 12/10/2024' },
         { id: 'packetId63', device: 'Tivi', action: 'Tắt', time: '19:53:35 - 12/11/2024' },
         { id: 'packetId38', device: 'Tivi', action: 'Bật', time: '20:53:32 - 12/11/2024' },
-        // Thêm các hàng khác nếu cần
-    ]);
+    ];
+
+    // Hiển thị tất cả dữ liệu ban đầu khi trang được tải
+    React.useEffect(() => {
+        setFilteredData(originalData);
+    }, []);
 
     const handleSearch = () => {
-        // Thực hiện tìm kiếm khi bấm nút
-        const data = [
-            { id: 'packetId63', device: 'Đèn', action: 'Tắt', time: '15:53:35 - 12/09/2024' },
-            { id: 'packetId38', device: 'Đèn', action: 'Bật', time: '16:53:32 - 12/09/2024' },
-            { id: 'packetId63', device: 'Quạt', action: 'Tắt', time: '17:53:35 - 12/10/2024' },
-            { id: 'packetId38', device: 'Quạt', action: 'Bật', time: '18:53:32 - 12/10/2024' },
-            { id: 'packetId63', device: 'Tivi', action: 'Tắt', time: '19:53:35 - 12/11/2024' },
-            { id: 'packetId38', device: 'Tivi', action: 'Bật', time: '20:53:32 - 12/11/2024' },
-            // Thêm các hàng khác nếu cần
-        ];
+        if (!startDateTime || !endDateTime) return;
 
-        const filtered = data.filter(row =>
-            Object.values(row).some(value =>
-                value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-            )
-        );
+        const filtered = originalData.filter(row => {
+            // Chuyển đổi thời gian thành định dạng 'yyyy/mm/dd hh:mm:ss'
+            const [time, date] = row.time.split(' - ');
+            const [day, month, year] = date.split('/');
+            const rowTime = new Date(`${year}/${month}/${day} ${time}`); // Chuyển đổi thời gian đúng cách
+
+            return rowTime >= startDateTime && rowTime <= endDateTime;
+        });
 
         setFilteredData(filtered);
     };
 
+
     return (
         <div className="container-fluid">
-            <h2 className="text-center"></h2> {/* Căn giữa tiêu đề */}
+
             <div className="filter-section">
-                <input
-                    type="text"
-                    id="search-input"
-                    placeholder="Tìm kiếm theo thời gian"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                <DatePicker
+                    selected={startDateTime}
+                    onChange={(date) => setStartDateTime(date)}
+                    showTimeSelect
+                    timeFormat="HH:mm:ss"
+                    timeIntervals={1}
+                    dateFormat="dd/MM/yyyy HH:mm:ss"
+                    timeCaption="Giờ"
+                    placeholderText="Chọn thời gian bắt đầu"
                 />
-                <button className="filter-button" onClick={handleSearch} style={{borderRadius:'10px', background: 'linear-gradient(to right, #77A1D3 0%, #79CBCA  51%, #77A1D3  100%)'}}>
+                <DatePicker
+                    selected={endDateTime}
+                    onChange={(date) => setEndDateTime(date)}
+                    showTimeSelect
+                    timeFormat="HH:mm:ss"
+                    timeIntervals={1}
+                    dateFormat="dd/MM/yyyy HH:mm:ss"
+                    timeCaption="Giờ"
+                    placeholderText="Chọn thời gian kết thúc"
+                />
+                <button className="filter-button" onClick={handleSearch} style={{ borderRadius: '10px', background: 'linear-gradient(to right, #77A1D3 0%, #79CBCA  51%, #77A1D3  100%)' }}>
                     Tìm kiếm
                 </button>
             </div>
@@ -59,14 +75,20 @@ const Device: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredData.map((row, index) => (
-                        <tr key={index}>
-                            <td>{row.id}</td>
-                            <td>{row.device}</td>
-                            <td>{row.action}</td>
-                            <td>{row.time}</td>
+                    {filteredData.length > 0 ? (
+                        filteredData.map((row, index) => (
+                            <tr key={index}>
+                                <td>{row.id}</td>
+                                <td>{row.device}</td>
+                                <td>{row.action}</td>
+                                <td>{row.time}</td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={4} style={{ textAlign: 'center' }}>Không có dữ liệu nào để hiển thị</td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
             </table>
         </div>
