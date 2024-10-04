@@ -1,5 +1,5 @@
 import React from 'react'
-import {Line} from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJs,
   LineElement,
@@ -7,7 +7,6 @@ import {
   LinearScale,
   PointElement,
   ChartOptions,
-  Legend
 } from 'chart.js'
 
 ChartJs.register(
@@ -15,16 +14,15 @@ ChartJs.register(
   CategoryScale,
   LinearScale,
   PointElement,
-
 )
 
-const Chart = ({dataSensor}: {dataSensor: any}) => {
+const Chart = ({ dataSensor }: { dataSensor: any }) => {
   const lightData = dataSensor.map((sensor: any) => sensor.light).slice(-10);
   const temperatureData = dataSensor.map((sensor: any) => sensor.temperature).slice(-10);
   const humidityData = dataSensor.map((sensor: any) => sensor.humidity).slice(-10);
   const data = {
     labels: [
-      0, 2, 3, 4, 5, 6, 7, 8, 9, 10
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9
     ],
     datasets: [
       {
@@ -35,6 +33,8 @@ const Chart = ({dataSensor}: {dataSensor: any}) => {
         pointBorderColor: 'transparent',
         pointBorderWidth: 4,
         tension: 0.4,
+        yAxisID: 'y1',
+        xAxisID: 'x1',
       },
       {
         label: 'Nhiệt độ',
@@ -44,6 +44,7 @@ const Chart = ({dataSensor}: {dataSensor: any}) => {
         pointBorderColor: 'transparent',
         pointBorderWidth: 4,
         tension: 0.4,
+        yAxisID: 'y',
       },
       {
         label: 'Độ ẩm',
@@ -53,37 +54,59 @@ const Chart = ({dataSensor}: {dataSensor: any}) => {
         pointBorderColor: 'transparent',
         pointBorderWidth: 4,
         tension: 0.4,
+        yAxisID: 'y',
       },
-  ]
+    ]
   };
   const options: ChartOptions<'line'> = {
     responsive: true,
-    scales:{
+    scales: {
       y: {
-        min:0,
-        max: 100,
+        min: 0,
+        max: 120,
         ticks: {
-          stepSize: 5,
-          callback: (value: string | number) => value
+          stepSize: 20,
+          callback: (value: string | number) => value,
         },
-
-      }
+        position: 'left',
+      },
+      y1: {
+        min: 0,
+        max: 1200,
+        ticks: {
+          stepSize: 200,
+          callback: (value: string | number) => value,
+        },
+        position: 'right',
+        grid: {
+          drawOnChartArea: false, // Không hiển thị lưới cho trục này
+        },
+      },
+      x: {
+        reverse: false, // Bình thường cho nhiệt độ và độ ẩm
+      },
+      x1: {
+        reverse: true, // Đảo ngược trục x cho ánh sáng
+        grid: {
+          drawOnChartArea: false, // Không hiển thị lưới cho trục x1
+        },
+      },
     }
   }
   return (
-    <div style={{width: '90%', maxWidth: '1000px', marginLeft:'20px' }}>
+    <div style={{ width: '90%', maxWidth: '1000px', marginLeft: '20px' }}>
       <div className='d-flex justify-content-between'>
         <div className='d-flex align-items-center'>
           <h3 className='text-gray-800'>Nhiệt độ</h3>
-          <div style={{width: '50px', height:'10px', backgroundColor:'#d32f2f', marginLeft: 5}}></div>
+          <div style={{ width: '50px', height: '10px', backgroundColor: '#d32f2f', marginLeft: 5 }}></div>
         </div>
         <div className='d-flex align-items-center'>
           <h3 className='text-gray-800'>Độ ẩm</h3>
-          <div style={{width: '50px', height:'10px', backgroundColor:'#1e88e5', marginLeft: 5}}></div>
+          <div style={{ width: '50px', height: '10px', backgroundColor: '#1e88e5', marginLeft: 5 }}></div>
         </div>
         <div className='d-flex align-items-center'>
           <h3 className='text-gray-800'>Ánh sáng</h3>
-          <div style={{width: '50px', height:'10px', backgroundColor:'#fbc02d', marginLeft: 5}}></div>
+          <div style={{ width: '50px', height: '10px', backgroundColor: '#fbc02d', marginLeft: 5 }}></div>
         </div>
       </div>
       <Line data={data} options={options}></Line>

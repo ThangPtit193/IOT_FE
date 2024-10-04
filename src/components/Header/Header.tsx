@@ -2,6 +2,7 @@ import React from 'react'
 import { Button, Container, Nav, Navbar, NavDropdown, Offcanvas, Row, Image } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 import LOGO from '../../assets/images/logo.png';
+import NOTIFICATION from '../../assets/images/header.png'
 
 const Header = () => {
 
@@ -23,7 +24,7 @@ const Header = () => {
 
               </NavLink>
             </Navbar.Brand>
-              {/* End logo */}
+            {/* End logo */}
 
             {/* <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-lg`} /> */}
             <Navbar.Offcanvas

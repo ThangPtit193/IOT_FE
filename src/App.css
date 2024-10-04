@@ -182,6 +182,16 @@
   border: 1px solid #dee2e6;
 }
 
+.pagination-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px 0;
+}
+
+.pagination-controls label {
+  margin-left: 20px; /* Căn chỉnh khoảng cách giữa các label */
+}
+
 /* Profile.css npm install @fortawesome/fontawesome-free */
 
 .container-fluid {

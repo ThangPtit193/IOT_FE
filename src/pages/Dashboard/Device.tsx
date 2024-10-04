@@ -6,15 +6,15 @@ import { saveHistoryToDatabase } from '../../data/repositories/api';
 export interface DeviceSchema {
   _id: string;
   name: string;
-  action?: boolean; 
+  action?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-export interface HistorySchema{
+export interface HistorySchema {
   deviceId: string;
   deviceName: string;
-  action:boolean;
+  action: boolean;
 }
 
 const Device = ({ devices }: { devices: DeviceSchema[] }) => {
@@ -61,7 +61,7 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
   }, [devices]);
 
   const toggleDevice = async (deviceId: string, deviceName: string) => {
-    
+
     if (client) {
       const currentState = deviceStates[deviceId];
       const newState = !currentState;
@@ -73,34 +73,34 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
       console.log(deviceName, newState)
 
 
-          try {
-      const response = await fetch(`http://localhost:3001/api/data/update-device/${deviceId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json', // Thêm header này
-        },
-        body: JSON.stringify({ action: newState }),
-      });
+      try {
+        const response = await fetch(`http://localhost:3001/api/data/update-device/${deviceId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json', // Thêm header này
+          },
+          body: JSON.stringify({ action: newState }),
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to update device action');
-        
+        if (!response.ok) {
+          throw new Error('Failed to update device action');
+
+        }
+
+        const result = await response.json();
+        console.log('Device updated:', result.data);
+        const historyEntry = {
+          deviceId: deviceId,
+          deviceName: deviceName,
+          action: newState,
+        };
+        await saveHistoryToDatabase(historyEntry);
+
+      } catch (error) {
+        console.error('Error updating device action:', error);
+      } finally {
+        setLoading(prev => ({ ...prev, [deviceId]: false }));
       }
-
-      const result = await response.json();
-      console.log('Device updated:', result.data);
-      const historyEntry = {
-        deviceId: deviceId,
-        deviceName: deviceName,
-        action: newState,
-      };
-      await saveHistoryToDatabase(historyEntry);
-      
-    } catch (error) {
-      console.error('Error updating device action:', error);
-    } finally {
-      setLoading(prev => ({ ...prev, [deviceId]: false }));
-    }
 
     }
   };
