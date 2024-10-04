@@ -1,44 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { getDeviceByTime } from '../../data/repositories/api';
+import { format } from 'date-fns';
+import { vi } from 'date-fns/locale';
 
 const Device: React.FC = () => {
-    const [startDateTime, setStartDateTime] = useState<Date | null>(null);
-    const [endDateTime, setEndDateTime] = useState<Date | null>(null);
-    const [filteredData, setFilteredData] = useState<any[]>([]);
-    const originalData = [
-        { id: 'packetId63', device: 'Đèn', action: 'Tắt', time: '15:53:35 - 12/09/2024' },
-        { id: 'packetId38', device: 'Đèn', action: 'Bật', time: '16:53:32 - 12/09/2024' },
-        { id: 'packetId63', device: 'Quạt', action: 'Tắt', time: '17:53:35 - 12/10/2024' },
-        { id: 'packetId38', device: 'Quạt', action: 'Bật', time: '18:53:32 - 12/10/2024' },
-        { id: 'packetId63', device: 'Tivi', action: 'Tắt', time: '19:53:35 - 12/11/2024' },
-        { id: 'packetId38', device: 'Tivi', action: 'Bật', time: '20:53:32 - 12/11/2024' },
-    ];
+    const [startDateTime, setStartDateTime] = useState<Date | null>(null); // Thời gian bắt đầu
+    const [endDateTime, setEndDateTime] = useState<Date | null>(null); // Thời gian kết thúc
+    const [filteredData, setFilteredData] = useState<any[]>([]); // Dữ liệu đã lọc để hiển thị
+    const [page, setPage] = useState<number>(1); // Trang hiện tại
+    const [pageSize, setPageSize] = useState<number>(10); // Kích thước trang
 
-    // Hiển thị tất cả dữ liệu ban đầu khi trang được tải
-    React.useEffect(() => {
-        setFilteredData(originalData);
-    }, []);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const result = await getDeviceByTime({
+                    startTime: '', // Không truyền giá trị thời gian để lấy toàn bộ dữ liệu
+                    endTime: '',
+                    page: page,
+                    pageSize: pageSize,
+                });
+                console.log("result", result);
+                setFilteredData(result?.data || []); // Lưu dữ liệu vào state filteredData
+            } catch (error) {
+                console.error('Lỗi khi lấy dữ liệu:', error);
+            }
+        };
 
-    const handleSearch = () => {
-        if (!startDateTime || !endDateTime) return;
+        fetchData();
+    }, [page, pageSize]); // Chạy lại khi thay đổi page hoặc pageSize
 
-        const filtered = originalData.filter(row => {
-            // Chuyển đổi thời gian thành định dạng 'yyyy/mm/dd hh:mm:ss'
-            const [time, date] = row.time.split(' - ');
-            const [day, month, year] = date.split('/');
-            const rowTime = new Date(`${year}/${month}/${day} ${time}`); // Chuyển đổi thời gian đúng cách
-
-            return rowTime >= startDateTime && rowTime <= endDateTime;
-        });
-
-        setFilteredData(filtered);
+    const handleSearch = async () => {
+        try {
+            const data = await getDeviceByTime({
+                startTime: startDateTime ? startDateTime.toISOString() : '',
+                endTime: endDateTime ? endDateTime.toISOString() : '',
+                page: page,
+                pageSize: pageSize,
+            });
+            setFilteredData(data?.data || []); // Lưu dữ liệu vào state filteredData
+        } catch (error) {
+            console.error('Lỗi khi tìm kiếm dữ liệu:', error);
+        }
     };
 
+    const convertToVietnamTime = (utcDate: string) => {
+        const date = new Date(utcDate);
+        const vietnamTime = new Date(date.getTime() + 7 * 60 * 60 * 1000); // Cộng thêm 7 giờ
+        return format(vietnamTime, 'dd/MM/yyyy HH:mm:ss', { locale: vi }); // Định dạng thời gian
+    };
 
     return (
         <div className="container-fluid">
-
             <div className="filter-section">
                 <DatePicker
                     selected={startDateTime}
@@ -60,11 +74,31 @@ const Device: React.FC = () => {
                     timeCaption="Giờ"
                     placeholderText="Chọn thời gian kết thúc"
                 />
-                <button className="filter-button" onClick={handleSearch} style={{ borderRadius: '10px', background: 'linear-gradient(to right, #77A1D3 0%, #79CBCA  51%, #77A1D3  100%)' }}>
+                <button
+                    className="filter-button"
+                    onClick={handleSearch}
+                    style={{
+                        borderRadius: '10px',
+                        background: 'linear-gradient(to right, #77A1D3 0%, #79CBCA  51%, #77A1D3  100%)',
+                    }}
+                >
                     Tìm kiếm
                 </button>
             </div>
 
+            {/* Căn chỉnh pageSize ở góc phải trên */}
+            <div className="page-size-control" style={{ display: 'flex', justifyContent: 'flex-end', margin: '10px 0' }}>
+                <label style={{ marginRight: '10px' }}>
+                    Số bản ghi trên trang:
+                    <select value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))}>
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                    </select>
+                </label>
+            </div>
+
+            {/* Bảng hiển thị dữ liệu thiết bị */}
             <table className="styled-table">
                 <thead>
                     <tr>
@@ -78,10 +112,10 @@ const Device: React.FC = () => {
                     {filteredData.length > 0 ? (
                         filteredData.map((row, index) => (
                             <tr key={index}>
-                                <td>{row.id}</td>
-                                <td>{row.device}</td>
-                                <td>{row.action}</td>
-                                <td>{row.time}</td>
+                                <td>{row._id}</td>
+                                <td>{row.deviceName}</td>
+                                <td>{row.action ? 'Bật' : 'Tắt'}</td>
+                                <td>{convertToVietnamTime(row.createdAt)}</td>
                             </tr>
                         ))
                     ) : (
@@ -91,6 +125,24 @@ const Device: React.FC = () => {
                     )}
                 </tbody>
             </table>
+
+            {/* Căn chỉnh page ở góc phải dưới */}
+            <div className="pagination-controls" style={{ display: 'flex', justifyContent: 'flex-end', margin: '10px 0' }}>
+                <button
+                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))} // Trang trước
+                    disabled={page === 1}
+                    style={{ marginRight: '10px' }}
+                >
+                    Trang trước
+                </button>
+                <span>{`Trang ${page}`}</span>
+                <button
+                    onClick={() => setPage((prev) => prev + 1)} // Trang tiếp
+                    style={{ marginLeft: '10px' }}
+                >
+                    Trang tiếp
+                </button>
+            </div>
         </div>
     );
 };

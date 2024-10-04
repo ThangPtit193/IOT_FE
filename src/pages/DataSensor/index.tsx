@@ -15,6 +15,8 @@ const DataSensor: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(5);
   const [dataFilter, setDataFilter] = useState<SensorData[]>([]);
+  const [totalData, setTotalData] = useState<SensorData[]>([]); // Tất cả dữ liệu
+  const [totalPages, setTotalPages] = useState<number>(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,29 +26,36 @@ const DataSensor: React.FC = () => {
           searchBy: '',
           orderBy: 'createdAt',
           sortBy: 'desc',
-          page: 1,
-          pageSize: 10,
+          page: 1, // Chỉ cần lấy dữ liệu ở trang đầu tiên
+          pageSize: 1000, // Lấy một số lượng lớn dữ liệu để không bị giới hạn
         });
-        console.log('Fetched data:', data);
-        setDataFilter(data);
+        setTotalData(data);
+        console.log('data', data)
+        setDataFilter(data.slice(0, itemsPerPage)); // Lấy dữ liệu cho trang đầu tiên
+        setTotalPages(Math.ceil(data.length / itemsPerPage)); // Tính toán tổng số trang
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchData();
-  }, []);
+  }, [itemsPerPage]);
+
+  useEffect(() => {
+    const currentData = totalData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    setDataFilter(currentData);
+  }, [currentPage, itemsPerPage, totalData]);
 
   const sortTable = (key: keyof SensorData) => {
     let direction: 'asc' | 'desc' = 'asc';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
       direction = 'desc';
     }
-    const sortedData = [...dataFilter].sort((a, b) => {
+    const sortedData = [...totalData].sort((a, b) => {
       if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
       if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
       return 0;
     });
-    setDataFilter(sortedData);
+    setTotalData(sortedData);
     setSortConfig({ key, direction });
   };
 
@@ -55,19 +64,12 @@ const DataSensor: React.FC = () => {
   };
 
   const handleSearchClick = () => {
-    const filteredData = dataFilter.filter(row =>
+    const filteredData = totalData.filter(row =>
       row.temperature.toString().includes(searchTerm.toLowerCase())
     );
-    setDataFilter(filteredData);
+    setTotalData(filteredData);
     setCurrentPage(1);
-  };
-
-  const currentData = dataFilter.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const totalPages = Math.ceil(dataFilter.length / itemsPerPage);
-
-  const handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setItemsPerPage(Number(event.target.value));
-    setCurrentPage(1);
+    setTotalPages(Math.ceil(filteredData.length / itemsPerPage)); // Cập nhật số trang sau khi lọc
   };
 
   return (
@@ -87,46 +89,39 @@ const DataSensor: React.FC = () => {
         </div>
         <div className="pagination-control">
           <label htmlFor="itemsPerPage">Số dòng trên mỗi trang: </label>
-          <select id="itemsPerPage" value={itemsPerPage} onChange={handleItemsPerPageChange}>
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
+          <select value={itemsPerPage} onChange={(e) => setItemsPerPage(Number(e.target.value))}>
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
           </select>
         </div>
         <table className="table table-hover mt-4" id="sensorTable">
           <thead>
             <tr>
-              <th scope="col">
-                ID
-              </th>
-              <th scope="col">
-                Nhiệt độ (°C)
+              <th scope="col">ID</th>
+              <th scope="col">Nhiệt độ (°C)
                 <button onClick={() => sortTable('temperature')}>&#9650;</button>
                 <button onClick={() => sortTable('temperature')}>&#9660;</button>
               </th>
-              <th scope="col">
-                Độ ẩm (%)
+              <th scope="col">Độ ẩm (%)
                 <button onClick={() => sortTable('humidity')}>&#9650;</button>
                 <button onClick={() => sortTable('humidity')}>&#9660;</button>
               </th>
-              <th scope="col">
-                Ánh sáng (Lux)
+              <th scope="col">Ánh sáng (Lux)
                 <button onClick={() => sortTable('light')}>&#9650;</button>
                 <button onClick={() => sortTable('light')}>&#9660;</button>
               </th>
-              <th scope="col">
-                Thời gian
-              </th>
+              <th scope="col">Thời gian</th>
             </tr>
           </thead>
           <tbody>
-            {currentData.map((row, index) => (
+            {dataFilter.map((row, index) => (
               <tr key={index}>
-                <td>{row._id}</td> {/* Hiển thị ký tự đầu của ID */}
+                <td>{row._id}</td>
                 <td>{row.temperature}</td>
                 <td>{row.humidity}</td>
                 <td>{row.light}</td>
-                <td>{new Date(row.createdAt).toLocaleString('vi-VN')}</td> {/* Hiển thị thời gian theo dạng ngày/tháng/năm giờ */}
+                <td>{new Date(row.createdAt).toLocaleString('vi-VN')}</td>
               </tr>
             ))}
           </tbody>

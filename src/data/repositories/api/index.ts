@@ -77,8 +77,8 @@ export const getDataByType = async ({ content, searchBy, orderBy, sortBy, page, 
       searchBy,
       orderBy,
       sortBy,
-      page,
-      pageSize,
+      page: page.toString(),
+      pageSize: pageSize.toString(),
     }).toString();
 
     const response = await fetch(`${API_BASE_URL}/api/data/table-data?${queryParams}`, {
@@ -98,3 +98,33 @@ export const getDataByType = async ({ content, searchBy, orderBy, sortBy, page, 
     throw error;
   }
 };
+
+export const getDeviceByTime = async ({ startTime, endTime, page, pageSize }: { startTime: string, endTime: string, page: number, pageSize: number }) => {
+  try {
+    // Tạo query string từ các tham số
+    const queryParams = new URLSearchParams({
+      startTime,
+      endTime,
+      page: page.toString(),
+      pageSize: pageSize.toString(),
+    }).toString();
+
+    // Gửi yêu cầu GET tới API với query string
+    const response = await fetch(`${API_BASE_URL}/api/data/get-device/table_device?${queryParams}`, {
+      method: 'GET',
+    });
+
+    // Kiểm tra nếu yêu cầu không thành công
+    if (!response.ok) {
+      throw new Error(`Network response was not ok. Status: ${response.status}`);
+    }
+
+    // Chuyển đổi phản hồi thành JSON
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching data from API:', error);
+    throw error;
+  }
+};
+
