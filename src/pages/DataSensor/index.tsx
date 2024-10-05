@@ -12,50 +12,60 @@ interface SensorData {
 const DataSensor: React.FC = () => {
   const [sortConfig, setSortConfig] = useState<{ key: keyof SensorData; direction: 'asc' | 'desc' } | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+  const [page, setPage] = useState<string>('1'); // Trang hiện tại
+  const [pageSize, setPageSize] = useState<string>('10'); // Kích thước trang
   const [dataFilter, setDataFilter] = useState<SensorData[]>([]);
-  const [totalData, setTotalData] = useState<SensorData[]>([]); // Tất cả dữ liệu
-  const [totalPages, setTotalPages] = useState<number>(0);
+  const [content, setContent] = useState<string>('');
+  const [searchBy, setSearchBy] = useState<string>('');
+  const [orderBy, setOrderBy] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('');
+  const [totalCount, setTotalCount] = useState<number>(0); // Tổng số bản ghi
+
+
+  useEffect(() => {
+    const fetch = async () => {
+      const totalRes = await getDataByType({
+        content: content,
+        searchBy: searchBy,
+        orderBy: orderBy,
+        sortBy: sortBy,
+        page: '', 
+        pageSize: '', 
+      })
+      console.log('total', totalRes.data.length);
+      setTotalCount(totalRes.data.length)
+    }
+    fetch()
+  },[content, searchBy, orderBy, sortBy])
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getDataByType({
-          content: '',
-          searchBy: '',
-          orderBy: 'createdAt',
-          sortBy: 'desc',
-          page: 1, // Chỉ cần lấy dữ liệu ở trang đầu tiên
-          pageSize: 1000, // Lấy một số lượng lớn dữ liệu để không bị giới hạn
+        const response = await getDataByType({
+          content: content,
+          searchBy: searchBy,
+          orderBy: orderBy,
+          sortBy: sortBy,
+          page: page, 
+          pageSize: pageSize, 
         });
-        setTotalData(data);
-        console.log('data', data)
-        setDataFilter(data.slice(0, itemsPerPage)); // Lấy dữ liệu cho trang đầu tiên
-        setTotalPages(Math.ceil(data.length / itemsPerPage)); // Tính toán tổng số trang
+        setDataFilter(response.data || []);
+        console.log('data', response)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchData();
-  }, [itemsPerPage]);
+  }, [content, searchBy, orderBy, sortBy, page, pageSize]);
 
-  useEffect(() => {
-    const currentData = totalData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-    setDataFilter(currentData);
-  }, [currentPage, itemsPerPage, totalData]);
 
   const sortTable = (key: keyof SensorData) => {
     let direction: 'asc' | 'desc' = 'asc';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
       direction = 'desc';
     }
-    const sortedData = [...totalData].sort((a, b) => {
-      if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
-      if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
-      return 0;
-    });
-    setTotalData(sortedData);
+    setOrderBy(key); // Trường cần sắp xếp (ví dụ: 'temperature')
+    setSortBy(direction); 
     setSortConfig({ key, direction });
   };
 
@@ -64,13 +74,16 @@ const DataSensor: React.FC = () => {
   };
 
   const handleSearchClick = () => {
-    const filteredData = totalData.filter(row =>
-      row.temperature.toString().includes(searchTerm.toLowerCase())
-    );
-    setTotalData(filteredData);
-    setCurrentPage(1);
-    setTotalPages(Math.ceil(filteredData.length / itemsPerPage)); // Cập nhật số trang sau khi lọc
+    setContent(searchTerm);
+    setPage('1');
   };
+
+  const changePageSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPageSize(e.target.value);
+    setPage('1')
+  }
+  
+  const totalPages = Math.ceil(totalCount / Number(pageSize));
 
   return (
     <div className="container-fluid" style={{ marginTop: '-50px' }}>
@@ -89,7 +102,7 @@ const DataSensor: React.FC = () => {
         </div>
         <div className="pagination-control">
           <label htmlFor="itemsPerPage">Số dòng trên mỗi trang: </label>
-          <select value={itemsPerPage} onChange={(e) => setItemsPerPage(Number(e.target.value))}>
+          <select value={pageSize} onChange={changePageSize}>
             <option value={5}>5</option>
             <option value={10}>10</option>
             <option value={20}>20</option>
@@ -115,24 +128,36 @@ const DataSensor: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {dataFilter.map((row, index) => (
-              <tr key={index}>
+          {dataFilter.length > 0 ? dataFilter.map((row, index) => (
+              <tr key={row._id}>
                 <td>{row._id}</td>
                 <td>{row.temperature}</td>
                 <td>{row.humidity}</td>
                 <td>{row.light}</td>
                 <td>{new Date(row.createdAt).toLocaleString('vi-VN')}</td>
               </tr>
-            ))}
+            )) : (
+              <tr>
+                <td colSpan={5} style={{ textAlign: 'center' }}>Không có dữ liệu</td>
+              </tr>
+            )}
           </tbody>
         </table>
-        <div className="pagination-control">
-          <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1}>
-            Trang trước
+        <div className="pagination-controls" style={{ display: 'flex', justifyContent: 'flex-end', margin: '10px 0' }}>
+          <button
+              onClick={() => setPage((prev) => (parseInt(prev) - 1).toString())} // Trang trước
+              disabled={page === '1'}
+              style={{ marginRight: '10px' }}
+          >
+              Trang trước
           </button>
-          <span>{currentPage} / {totalPages}</span>
-          <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages}>
-            Trang sau
+          <span>{`Trang ${page} / ${totalPages}`}</span>
+          <button
+              onClick={() => setPage((prev) => (parseInt(prev) + 1).toString())} // Trang tiếp
+              disabled={parseInt(page) >= totalPages}
+              style={{ marginLeft: '10px' }}
+          >
+              Trang tiếp
           </button>
         </div>
       </div>
