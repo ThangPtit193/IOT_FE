@@ -39,7 +39,7 @@ export const initializeMqttClient = (onDataReceived: (data: SensorData) => void)
   client.on('message', async (topic, message) => {
     try {
       const payload = JSON.parse(message.toString());
-      // console.log("payload", payload)
+      console.log("payload", payload);
       if (topic === topicSensor) {
         data.humidity = payload.humidity;
         data.temperature = payload.temperature;

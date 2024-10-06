@@ -99,7 +99,7 @@ export const getDataByType = async ({ content, searchBy, orderBy, sortBy, page, 
   }
 };
 
-export const getDeviceByTime = async ({ startTime, endTime, page, pageSize }: { startTime: string, endTime: string, page: number, pageSize: number }) => {
+export const getDeviceByTime = async ({ startTime, endTime, page, pageSize }: { startTime: string, endTime: string, page: string, pageSize: string }) => {
   try {
     // Tạo query string từ các tham số
     const queryParams = new URLSearchParams({
@@ -127,4 +127,6 @@ export const getDeviceByTime = async ({ startTime, endTime, page, pageSize }: { 
     throw error;
   }
 };
+
+
 

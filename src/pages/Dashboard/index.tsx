@@ -48,7 +48,7 @@ const Dashboard = () => {
   return (
     <div>
       <Overview mqttData={mqttData} />
-      <div className='d-md-flex'>
+      <div className='d-md-flex justify-content-between'>
         <Chart dataSensor={dataSensor} />
         <Device devices={devices} />
       </div>

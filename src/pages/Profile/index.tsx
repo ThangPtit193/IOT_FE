@@ -1,6 +1,7 @@
 import React from 'react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-
+import imageDuc from '../../assets/images/avatar-duc.jpg';
+import imageThang from '../../assets/images/avatar-thang.jpg'
 const Profile: React.FC = () => {
     return (
         <div className="container-fluid">
@@ -10,7 +11,7 @@ const Profile: React.FC = () => {
                     <div className="d-flex flex-column align-items-center">
 
                         <img
-                            src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/419894680_1557986171632466_5352219294845925092_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=KT7Ne7h7XcoQ7kNvgGeMWDZ&_nc_ht=scontent.fhan18-1.fna&oh=00_AYARVlgp_M2w-rjUcMf540MYjlW2q-F09mag84FuMQMdAg&oe=66E3167A"
+                            src={imageDuc}
                             alt="Profile"
                             className="profile-img"
                         />
@@ -39,7 +40,7 @@ const Profile: React.FC = () => {
                 <div className="profile-card">
                     <div className="d-flex flex-column justify-content-center align-items-center">
                         <img
-                            src="https://scontent.fhan14-3.fna.fbcdn.net/v/t1.18169-9/10806308_1520975621512394_1633268389946773314_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=Ii5fNNYtPycQ7kNvgE36DI6&_nc_ht=scontent.fhan14-3.fna&oh=00_AYBnJY1i4RlayLJ8PMFrqUlLjIUZv7WSULbzL5IbKtQCgw&oe=66F0CE03"
+                            src={imageThang}
                             alt="Profile"
                             className="profile-img"
                         />

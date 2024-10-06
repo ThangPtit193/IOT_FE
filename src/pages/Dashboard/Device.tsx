@@ -131,7 +131,7 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
   };
 
   return (
-    <div>
+    <div className='d-flex row justify-content-center align-items-center'>
       {devices.map((device) => {
         let Icon;
         switch (device.name.toLowerCase()) {
@@ -148,7 +148,7 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
             Icon = FaFan; // Default icon
         }
         return (
-          <div style={getContainerStyle(deviceStates[device._id])} key={device._id}>
+          <div style={getContainerStyle(deviceStates[device._id])} key={device._id} className='col-6 mb-3'>
             <h4 style={{ color: '#284680' }}>{device.name}</h4>
             <div
               style={{
