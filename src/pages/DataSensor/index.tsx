@@ -20,6 +20,7 @@ const DataSensor: React.FC = () => {
   const [orderBy, setOrderBy] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const [totalCount, setTotalCount] = useState<number>(0); // Tổng số bản ghi
+  const [searchOption, setSearchOption] = useState<string>('');
 
   useEffect(() => {
     const fetch = async () => {
@@ -72,6 +73,7 @@ const DataSensor: React.FC = () => {
   };
 
   const handleSearchClick = () => {
+    setSearchBy(searchOption);
     setContent(searchTerm);
     setPage('1');
   };
@@ -90,13 +92,13 @@ const DataSensor: React.FC = () => {
           <input
             type="text"
             id="search-input"
-            placeholder={`Tìm kiếm theo ${searchBy === 'temperature' ? 'nhiệt độ' : searchBy === 'humidity' ? 'độ ẩm' : 'ánh sáng'}`}
+            placeholder={`Tìm kiếm theo ${searchOption === 'temperature' ? 'nhiệt độ' : searchOption === 'humidity' ? 'độ ẩm' : 'ánh sáng'}`}
             value={searchTerm}
             onChange={handleSearchChange}
           />
           <select
-            value={searchBy}
-            onChange={(e) => setSearchBy(e.target.value)}
+            value={searchOption}
+            onChange={(e) => setSearchOption(e.target.value)}
             style={{ marginLeft: '10px', padding: '5px' }}
           >
             <option value="temperature">Nhiệt độ</option>
@@ -142,7 +144,7 @@ const DataSensor: React.FC = () => {
             {dataFilter.length > 0 ? dataFilter.map((row, index) => (
               <tr key={row._id}>
                 <td>{row._id}</td>
-                <td>{row.temperature}</td>
+                <td>{Math.ceil(row.temperature)}</td>
                 <td>{row.humidity}</td>
                 <td>{row.light}</td>
                 <td>{new Date(row.createdAt).toLocaleString('vi-VN')}</td>

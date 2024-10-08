@@ -10,7 +10,7 @@ export const sendDataToDatabase = async (data: SensorData) => {
     const response = await fetch(`${API_BASE_URL}/api/data/create`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json', // Thêm header này
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
@@ -33,7 +33,7 @@ export const saveHistoryToDatabase = async (history: HistorySchema) => {
     const response = await fetch(`${API_BASE_URL}/api/data/history-action`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json', // Thêm header này
+        'Content-Type': 'application/json', 
       },
       body: JSON.stringify(history),
     });
