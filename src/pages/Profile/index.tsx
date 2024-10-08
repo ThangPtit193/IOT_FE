@@ -23,11 +23,11 @@ const Profile: React.FC = () => {
                             <p className="info-item"><strong>0862158106</strong><br />Số điện thoại</p>
                         </div>
                         <div className="d-flex">
-                            <a href="https://www.facebook.com/duc.thuthien" target="_blank" className="facebook" rel="noopener noreferrer" >
-                                <i className="fab fa-facebook" style={{ fontSize: '40px', marginRight: '16px' }}></i>
+                            <a href="https://drive.google.com/drive/u/0/folders/1qOC_Twtd-dVcXXZzsPNTAia6TJ63EmlE" target="_blank" className="facebook" rel="noopener noreferrer" >
+                                <i className="fas fa-file-word" style={{ fontSize: '40px', marginRight: '16px' }}></i>
                             </a>
-                            <a href="https://www.instagram.com/tdzeros" target="_blank" className="instagram" rel="noopener noreferrer">
-                                <i className="fab fa-instagram" style={{ fontSize: '40px', marginRight: '16px' }}></i>
+                            <a href="https://drive.google.com/drive/u/0/folders/1qOC_Twtd-dVcXXZzsPNTAia6TJ63EmlE" target="_blank" className="instagram" rel="noopener noreferrer">
+                                <i className="fas fa-file-code" style={{ fontSize: '40px', marginRight: '16px' }}></i>
                             </a>
                             <a href="https://github.com/ZDUC" target="_blank" className="github" rel="noopener noreferrer">
                                 <i className="fab fa-github" style={{ fontSize: '40px' }}></i>
@@ -52,11 +52,11 @@ const Profile: React.FC = () => {
                             <p className="info-item"><strong>0922128688</strong><br />Số điện thoại</p>
                         </div>
                         <div className="d-flex">
-                            <a href="https://www.facebook.com/kuka.linh" target="_blank" className="facebook" rel="noopener noreferrer">
-                                <i className="fab fa-facebook" style={{ fontSize: '40px', marginRight: '16px' }}></i>
+                            <a href="https://drive.google.com/drive/u/0/folders/1qOC_Twtd-dVcXXZzsPNTAia6TJ63EmlE" target="_blank" className="facebook" rel="noopener noreferrer">
+                                <i className="fas fa-file-word" style={{ fontSize: '40px', marginRight: '16px' }}></i>
                             </a>
-                            <a href="https://www.instagram.com/thangpham193/" target="_blank" className="instagram" rel="noopener noreferrer">
-                                <i className="fab fa-instagram" style={{ fontSize: '40px', marginRight: '16px' }}></i>
+                            <a href="https://drive.google.com/drive/u/0/folders/1qOC_Twtd-dVcXXZzsPNTAia6TJ63EmlE" target="_blank" className="instagram" rel="noopener noreferrer">
+                                <i className="fas fa-file-code" style={{ fontSize: '40px', marginRight: '16px' }}></i>
                             </a>
                             <a href="https://github.com/ThangPtit193" target="_blank" className="github" rel="noopener noreferrer">
                                 <i className="fab fa-github" style={{ fontSize: '40px', marginRight: '16px' }}></i>

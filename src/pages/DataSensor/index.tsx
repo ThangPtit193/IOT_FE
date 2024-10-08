@@ -16,11 +16,10 @@ const DataSensor: React.FC = () => {
   const [pageSize, setPageSize] = useState<string>('10'); // Kích thước trang
   const [dataFilter, setDataFilter] = useState<SensorData[]>([]);
   const [content, setContent] = useState<string>('');
-  const [searchBy, setSearchBy] = useState<string>('');
+  const [searchBy, setSearchBy] = useState<string>('temperature'); // Giá trị tìm kiếm ban đầu là 'temperature'
   const [orderBy, setOrderBy] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const [totalCount, setTotalCount] = useState<number>(0); // Tổng số bản ghi
-
 
   useEffect(() => {
     const fetch = async () => {
@@ -29,14 +28,14 @@ const DataSensor: React.FC = () => {
         searchBy: searchBy,
         orderBy: orderBy,
         sortBy: sortBy,
-        page: '', 
-        pageSize: '', 
+        page: '',
+        pageSize: '',
       })
       console.log('total', totalRes.data.length);
       setTotalCount(totalRes.data.length)
     }
     fetch()
-  },[content, searchBy, orderBy, sortBy])
+  }, [content, searchBy, orderBy, sortBy]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,11 +45,11 @@ const DataSensor: React.FC = () => {
           searchBy: searchBy,
           orderBy: orderBy,
           sortBy: sortBy,
-          page: page, 
-          pageSize: pageSize, 
+          page: page,
+          pageSize: pageSize,
         });
         setDataFilter(response.data || []);
-        console.log('data', response)
+        console.log('data', response);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -58,14 +57,13 @@ const DataSensor: React.FC = () => {
     fetchData();
   }, [content, searchBy, orderBy, sortBy, page, pageSize]);
 
-
   const sortTable = (key: keyof SensorData) => {
     let direction: 'asc' | 'desc' = 'asc';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
       direction = 'desc';
     }
     setOrderBy(key); // Trường cần sắp xếp (ví dụ: 'temperature')
-    setSortBy(direction); 
+    setSortBy(direction);
     setSortConfig({ key, direction });
   };
 
@@ -80,9 +78,9 @@ const DataSensor: React.FC = () => {
 
   const changePageSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setPageSize(e.target.value);
-    setPage('1')
-  }
-  
+    setPage('1');
+  };
+
   const totalPages = Math.ceil(totalCount / Number(pageSize));
 
   return (
@@ -92,11 +90,24 @@ const DataSensor: React.FC = () => {
           <input
             type="text"
             id="search-input"
-            placeholder='Tìm kiếm theo nhiệt độ'
+            placeholder={`Tìm kiếm theo ${searchBy === 'temperature' ? 'nhiệt độ' : searchBy === 'humidity' ? 'độ ẩm' : 'ánh sáng'}`}
             value={searchTerm}
             onChange={handleSearchChange}
           />
-          <button className="filter-button" style={{ borderRadius: '10px', background: 'linear-gradient(to right, #77A1D3 0%, #79CBCA  51%, #77A1D3  100%)' }} onClick={handleSearchClick}>
+          <select
+            value={searchBy}
+            onChange={(e) => setSearchBy(e.target.value)}
+            style={{ marginLeft: '10px', padding: '5px' }}
+          >
+            <option value="temperature">Nhiệt độ</option>
+            <option value="humidity">Độ ẩm</option>
+            <option value="light">Ánh sáng</option>
+          </select>
+          <button
+            className="filter-button"
+            style={{ borderRadius: '10px', background: 'linear-gradient(to right, #77A1D3 0%, #79CBCA 51%, #77A1D3 100%)', marginLeft: '10px' }}
+            onClick={handleSearchClick}
+          >
             Tìm kiếm
           </button>
         </div>
@@ -128,7 +139,7 @@ const DataSensor: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-          {dataFilter.length > 0 ? dataFilter.map((row, index) => (
+            {dataFilter.length > 0 ? dataFilter.map((row, index) => (
               <tr key={row._id}>
                 <td>{row._id}</td>
                 <td>{Math.ceil(row.temperature)}</td>
@@ -145,19 +156,19 @@ const DataSensor: React.FC = () => {
         </table>
         <div className="pagination-controls" style={{ display: 'flex', justifyContent: 'flex-end', margin: '10px 0' }}>
           <button
-              onClick={() => setPage((prev) => (parseInt(prev) - 1).toString())} // Trang trước
-              disabled={page === '1'}
-              style={{ marginRight: '10px' }}
+            onClick={() => setPage((prev) => (parseInt(prev) - 1).toString())} // Trang trước
+            disabled={page === '1'}
+            style={{ marginRight: '10px' }}
           >
-              Trang trước
+            Trang trước
           </button>
           <span>{`Trang ${page} / ${totalPages}`}</span>
           <button
-              onClick={() => setPage((prev) => (parseInt(prev) + 1).toString())} // Trang tiếp
-              disabled={parseInt(page) >= totalPages}
-              style={{ marginLeft: '10px' }}
+            onClick={() => setPage((prev) => (parseInt(prev) + 1).toString())} // Trang tiếp
+            disabled={parseInt(page) >= totalPages}
+            style={{ marginLeft: '10px' }}
           >
-              Trang tiếp
+            Trang tiếp
           </button>
         </div>
       </div>
