@@ -49,12 +49,12 @@ export const initializeMqttClient = (onDataReceived: (data: SensorData) => void)
 
       if (data.temperature !== null && data.humidity !== null && data.light !== null) {
         onDataReceived({ ...data });
-        // try {
-        //   await sendDataToDatabase({ ...data });
-        //   console.log('Data sent to database successfully');
-        // } catch (error) {
-        //   console.error('Failed to send data to database:', error);
-        // }
+        try {
+          await sendDataToDatabase({ ...data });
+          console.log('Data sent to database successfully');
+        } catch (error) {
+          console.error('Failed to send data to database:', error);
+        }
         data = {
           temperature: null,
           humidity: null,

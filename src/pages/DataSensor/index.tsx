@@ -131,7 +131,7 @@ const DataSensor: React.FC = () => {
           {dataFilter.length > 0 ? dataFilter.map((row, index) => (
               <tr key={row._id}>
                 <td>{row._id}</td>
-                <td>{row.temperature}</td>
+                <td>{Math.ceil(row.temperature)}</td>
                 <td>{row.humidity}</td>
                 <td>{row.light}</td>
                 <td>{new Date(row.createdAt).toLocaleString('vi-VN')}</td>
