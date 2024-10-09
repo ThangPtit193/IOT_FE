@@ -10,7 +10,7 @@ export const sendDataToDatabase = async (data: SensorData) => {
     const response = await fetch(`${API_BASE_URL}/api/data/create`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json', // Thêm header này
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
@@ -33,7 +33,7 @@ export const saveHistoryToDatabase = async (history: HistorySchema) => {
     const response = await fetch(`${API_BASE_URL}/api/data/history-action`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json', // Thêm header này
+        'Content-Type': 'application/json', 
       },
       body: JSON.stringify(history),
     });
@@ -68,3 +68,65 @@ export const sendStateToDatabase = async (device: DeviceSchema) => {
     throw error;
   }
 }
+
+export const getDataByType = async ({ content, searchBy, orderBy, sortBy, page, pageSize }: { content: any, searchBy: any, orderBy: any, sortBy: any, page: any, pageSize: any }) => {
+  try {
+    // Tạo URL với query string từ các tham số
+    const queryParams = new URLSearchParams({
+      content,
+      searchBy,
+      orderBy,
+      sortBy,
+      page: page.toString(),
+      pageSize: pageSize.toString(),
+    }).toString();
+
+    const response = await fetch(`${API_BASE_URL}/api/data/table-data?${queryParams}`, {
+      method: 'GET',
+    });
+
+    // Kiểm tra nếu yêu cầu không thành công
+    if (!response.ok) {
+      throw new Error(`Network response was not ok. Status: ${response.status}`);
+    }
+
+    // Chuyển đổi phản hồi thành JSON
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching data from API:', error);
+    throw error;
+  }
+};
+
+export const getDeviceByTime = async ({ startTime, endTime, page, pageSize }: { startTime: string, endTime: string, page: string, pageSize: string }) => {
+  try {
+    // Tạo query string từ các tham số
+    const queryParams = new URLSearchParams({
+      startTime,
+      endTime,
+      page: page.toString(),
+      pageSize: pageSize.toString(),
+    }).toString();
+
+    // Gửi yêu cầu GET tới API với query string
+    const response = await fetch(`${API_BASE_URL}/api/data/get-device/table_device?${queryParams}`, {
+      method: 'GET',
+    });
+
+    // Kiểm tra nếu yêu cầu không thành công
+    if (!response.ok) {
+      throw new Error(`Network response was not ok. Status: ${response.status}`);
+    }
+
+    // Chuyển đổi phản hồi thành JSON
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching data from API:', error);
+    throw error;
+  }
+};
+
+
+

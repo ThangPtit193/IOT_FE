@@ -1,54 +1,118 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { getDeviceByTime } from '../../data/repositories/api';
+import { convertToVietnamTime } from '../../data/helper';
 
 const Device: React.FC = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filteredData, setFilteredData] = useState([
-        { id: 'packetId63', device: 'Đèn', action: 'Tắt', time: '15:53:35 - 12/09/2024' },
-        { id: 'packetId38', device: 'Đèn', action: 'Bật', time: '16:53:32 - 12/09/2024' },
-        { id: 'packetId63', device: 'Quạt', action: 'Tắt', time: '17:53:35 - 12/10/2024' },
-        { id: 'packetId38', device: 'Quạt', action: 'Bật', time: '18:53:32 - 12/10/2024' },
-        { id: 'packetId63', device: 'Tivi', action: 'Tắt', time: '19:53:35 - 12/11/2024' },
-        { id: 'packetId38', device: 'Tivi', action: 'Bật', time: '20:53:32 - 12/11/2024' },
-        // Thêm các hàng khác nếu cần
-    ]);
+
+    const [startDateTime, setStartDateTime] = useState<Date | null>(null); 
+    const [endDateTime, setEndDateTime] = useState<Date | null>(null);
+    const [filteredData, setFilteredData] = useState<any[]>([]); // Dữ liệu đã lọc để hiển thị
+    const [page, setPage] = useState<string>('1'); // Trang hiện tại
+    const [pageSize, setPageSize] = useState<string>('10'); // Kích thước trang
+    const [totalCount, setTotalCount] = useState<number>(0); // Tổng số bản ghi
+    const [startInput, setStartInput] = useState<Date | null>(null);
+    const [endInput, setEndInput] = useState<Date | null>(null);
+
+
+    useEffect(() => {
+        const fetchFirst = async () => {
+            try {
+                const resAll = await getDeviceByTime({
+                    startTime: startDateTime ? startDateTime.toISOString() : '',
+                    endTime: endDateTime ? endDateTime.toISOString() : '',
+                    page: '',
+                    pageSize: '',
+                });
+                setTotalCount(resAll.data.length); // Lưu tổng số bản ghi vào state totalCount
+                // console.log("total", resAll.data.length);
+            } catch (error) {
+                console.error('Lỗi khi lấy dữ liệu:', error);
+            }
+        }
+        fetchFirst();
+    },[startDateTime, endDateTime])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const result = await getDeviceByTime({
+                    startTime: startDateTime ? startDateTime.toISOString() : '',
+                    endTime: endDateTime ? endDateTime.toISOString() : '',
+                    page: page,
+                    pageSize: pageSize,
+                });
+                console.log("result", result);
+                setFilteredData(result?.data || []); // Lưu dữ liệu vào state filteredData
+            } catch (error) {
+                console.error('Lỗi khi lấy dữ liệu:', error);
+            }
+        };
+
+        fetchData();
+    }, [page, pageSize, startDateTime, endDateTime]);
 
     const handleSearch = () => {
-        // Thực hiện tìm kiếm khi bấm nút
-        const data = [
-            { id: 'packetId63', device: 'Đèn', action: 'Tắt', time: '15:53:35 - 12/09/2024' },
-            { id: 'packetId38', device: 'Đèn', action: 'Bật', time: '16:53:32 - 12/09/2024' },
-            { id: 'packetId63', device: 'Quạt', action: 'Tắt', time: '17:53:35 - 12/10/2024' },
-            { id: 'packetId38', device: 'Quạt', action: 'Bật', time: '18:53:32 - 12/10/2024' },
-            { id: 'packetId63', device: 'Tivi', action: 'Tắt', time: '19:53:35 - 12/11/2024' },
-            { id: 'packetId38', device: 'Tivi', action: 'Bật', time: '20:53:32 - 12/11/2024' },
-            // Thêm các hàng khác nếu cần
-        ];
-
-        const filtered = data.filter(row =>
-            Object.values(row).some(value =>
-                value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-            )
-        );
-
-        setFilteredData(filtered);
+        setStartDateTime(startInput)
+        setEndDateTime(endInput);
     };
 
+    const changePageSize = (e:React.ChangeEvent<HTMLSelectElement> ) => {
+        setPageSize(e.target.value);
+        setPage('1')
+    }
+    
+    const totalPages = Math.ceil(totalCount / Number(pageSize));
+    
     return (
         <div className="container-fluid">
-            <h2 className="text-center"></h2> {/* Căn giữa tiêu đề */}
             <div className="filter-section">
-                <input
-                    type="text"
-                    id="search-input"
-                    placeholder="Tìm kiếm theo thời gian"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                <DatePicker
+                    selected={startInput}
+                    onChange={(date) => setStartInput(date)}
+                    showTimeSelect
+                    timeFormat="HH:mm:ss"
+                    timeIntervals={1}
+                    dateFormat="dd/MM/yyyy HH:mm:ss"
+                    timeCaption="Giờ"
+                    placeholderText="Chọn thời gian bắt đầu"
                 />
-                <button className="filter-button" onClick={handleSearch} style={{borderRadius:'10px', background: 'linear-gradient(to right, #77A1D3 0%, #79CBCA  51%, #77A1D3  100%)'}}>
+                <DatePicker
+                    selected={endInput}
+                    onChange={(date) => setEndInput(date)}
+                    showTimeSelect
+                    timeFormat="HH:mm:ss"
+                    timeIntervals={1}
+                    dateFormat="dd/MM/yyyy HH:mm:ss"
+                    timeCaption="Giờ"
+                    placeholderText="Chọn thời gian kết thúc"
+                />
+                <button
+                    className="filter-button"
+                    onClick={handleSearch}
+                    style={{
+                        borderRadius: '10px',
+                        background: 'linear-gradient(to right, #77A1D3 0%, #79CBCA  51%, #77A1D3  100%)',
+                    }}
+                >
                     Tìm kiếm
                 </button>
             </div>
 
+            {/* Căn chỉnh pageSize ở góc phải trên */}
+            <div className="page-size-control" style={{ display: 'flex', justifyContent: 'flex-end', margin: '10px 0' }}>
+                <label style={{ marginRight: '10px' }}>
+                    Số bản ghi trên trang:
+                    <select value={pageSize} onChange={changePageSize}>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                    </select>
+                </label>
+            </div>
+
+            {/* Bảng hiển thị dữ liệu thiết bị */}
             <table className="styled-table">
                 <thead>
                     <tr>
@@ -59,16 +123,41 @@ const Device: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredData.map((row, index) => (
-                        <tr key={index}>
-                            <td>{row.id}</td>
-                            <td>{row.device}</td>
-                            <td>{row.action}</td>
-                            <td>{row.time}</td>
+                    {filteredData.length > 0 ? (
+                        filteredData.map((row, index) => (
+                            <tr key={index}>
+                                <td>{row.deviceId}</td>
+                                <td>{row.deviceName}</td>
+                                <td>{row.action ? 'Bật' : 'Tắt'}</td>
+                                <td>{convertToVietnamTime(row.createdAt)}</td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={4} style={{ textAlign: 'center' }}>Không có dữ liệu nào để hiển thị</td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
             </table>
+
+            {/* Căn chỉnh page ở góc phải dưới */}
+            <div className="pagination-controls" style={{ display: 'flex', justifyContent: 'flex-end', margin: '10px 0' }}>
+                <button
+                    onClick={() => setPage((prev) => (parseInt(prev) - 1).toString())} // Trang trước
+                    disabled={page === '1'}
+                    style={{ marginRight: '10px' }}
+                >
+                    Trang trước
+                </button>
+                <span>{`Trang ${page} / ${totalPages}`}</span>
+                <button
+                    onClick={() => setPage((prev) => (parseInt(prev) + 1).toString())} // Trang tiếp
+                    disabled={parseInt(page) >= totalPages}
+                    style={{ marginLeft: '10px' }}
+                >
+                    Trang tiếp
+                </button>
+            </div>
         </div>
     );
 };
