@@ -32,6 +32,10 @@ export const initializeMqttClient = (onDataReceived: (data: SensorData) => void)
     light: null,
   };
 
+  // Biến để kiểm soát tốc độ
+  let timer: NodeJS.Timeout | null = null;
+  const THROTTLE_TIME = 3000; // thời gian chờ 3 giây trước khi gửi dữ liệu đến cơ sở dữ liệu (ms)
+
   client.on('connect', function () {
     client.subscribe([topicSensor, topicLight]);
   });
@@ -39,7 +43,8 @@ export const initializeMqttClient = (onDataReceived: (data: SensorData) => void)
   client.on('message', async (topic, message) => {
     try {
       const payload = JSON.parse(message.toString());
-      console.log("payload", payload);
+      
+      // Cập nhật dữ liệu dựa trên chủ đề
       if (topic === topicSensor) {
         data.humidity = payload.humidity;
         data.temperature = payload.temperature;
@@ -47,22 +52,34 @@ export const initializeMqttClient = (onDataReceived: (data: SensorData) => void)
         data.light = payload.lux;
       }
 
+      // Kiểm tra xem tất cả dữ liệu đã có sẵn hay chưa
       if (data.temperature !== null && data.humidity !== null && data.light !== null) {
-        onDataReceived({ ...data });
-        try {
-          await sendDataToDatabase({ ...data });
-          console.log('Data sent to database successfully');
-        } catch (error) {
-          console.error('Failed to send data to database:', error);
+        // Xóa bộ hẹn giờ hiện tại nếu có
+        if (timer) {
+          clearTimeout(timer);
         }
-        data = {
-          temperature: null,
-          humidity: null,
-          light: null
-        };
+
+        // Đặt một bộ hẹn giờ mới để gửi dữ liệu đến cơ sở dữ liệu
+        timer = setTimeout(async () => {
+          // onDataReceived({ ...data });
+
+          // try {
+          //   await sendDataToDatabase({ ...data });
+          //   console.log('Dữ liệu đã được gửi đến cơ sở dữ liệu thành công');
+          // } catch (error) {
+          //   console.error('Gửi dữ liệu đến cơ sở dữ liệu không thành công:', error);
+          // }
+
+          // Đặt lại dữ liệu sau khi gửi
+          data = {
+            temperature: null,
+            humidity: null,
+            light: null
+          };
+        }, THROTTLE_TIME);
       }
     } catch (error) {
-      console.error('Error parsing message:', error);
+      console.error('Lỗi khi phân tích tin nhắn:', error);
     }
   });
 

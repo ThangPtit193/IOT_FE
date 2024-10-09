@@ -20,7 +20,7 @@ const DataSensor: React.FC = () => {
   const [orderBy, setOrderBy] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const [totalCount, setTotalCount] = useState<number>(0); // Tổng số bản ghi
-  const [searchOption, setSearchOption] = useState<string>('');
+  const [searchOption, setSearchOption] = useState<string>('temperature');
 
   useEffect(() => {
     const fetch = async () => {
