@@ -18,7 +18,6 @@ const Device: React.FC = () => {
             try {
                 const resAll = await getDeviceByTime({
                     startTime: startInput ? startInput : '',
-                    endTime: startInput ? startInput : '',
                     page: '',
                     pageSize: '',
                 });
@@ -37,7 +36,6 @@ const Device: React.FC = () => {
                 const result = await getDeviceByTime({
                     
                     startTime: startInput ? startInput : '',
-                    endTime: startInput ? startInput : '',
                     page: page,
                     pageSize: pageSize,
                 });
