@@ -1,7 +1,8 @@
 import React, { useState, useEffect, CSSProperties } from 'react';
-import { FaFan, FaTv, FaLightbulb, FaToggleOn, FaToggleOff } from 'react-icons/fa';
+import { FaTv, FaLightbulb, FaToggleOn, FaToggleOff } from 'react-icons/fa';
 import mqtt, { MqttClient } from 'mqtt';
 import { saveHistoryToDatabase } from '../../data/repositories/api';
+import FaFan from '../../assets/images/FaFan.png';
 
 export interface DeviceSchema {
   _id: string;
@@ -44,24 +45,18 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
       console.log('Device component connected to MQTT broker');
     });
 
-    // return () => {
-    //   mqttClient.end(); // Clean up on unmount
-    // };
-
   }, []);
 
   useEffect(() => {
-    // Initialize device states based on the devices received from the API
     const initialStates: { [key: string]: boolean } = {};
     devices.forEach(device => {
-      initialStates[device._id] = device.action || false; // Default to false if action is undefined
-      setLoading(prev => ({ ...prev, [device._id]: false })); // Initialize loading state
+      initialStates[device._id] = device.action || false;
+      setLoading(prev => ({ ...prev, [device._id]: false }));
     });
     setDeviceStates(initialStates);
   }, [devices]);
 
   const toggleDevice = async (deviceId: string, deviceName: string) => {
-
     if (client) {
       const currentState = deviceStates[deviceId];
       const newState = !currentState;
@@ -72,19 +67,17 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
       client.publish(`esp8266/${deviceName}`, JSON.stringify({ state: newState }));
       console.log(deviceName, newState)
 
-
       try {
         const response = await fetch(`http://localhost:3001/api/data/update-device/${deviceId}`, {
           method: 'PUT',
           headers: {
-            'Content-Type': 'application/json', // Thêm header này
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({ action: newState }),
         });
 
         if (!response.ok) {
           throw new Error('Failed to update device action');
-
         }
 
         const result = await response.json();
@@ -101,7 +94,6 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
       } finally {
         setLoading(prev => ({ ...prev, [deviceId]: false }));
       }
-
     }
   };
 
@@ -130,33 +122,55 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
     position: 'relative',
   };
 
+  const tvStyle = (isOn: boolean): CSSProperties => ({
+    background: isOn ? 'linear-gradient(45deg, #ff0000, #00ff00, #0000ff)' : '#3E7EF7',
+    borderRadius: '16px',
+    width: '100px',
+    height: '100px',
+  });
+
+  const bulbStyle = (isOn: boolean): CSSProperties => ({
+    background: isOn ? 'gold' : '#3E7EF7',
+    borderRadius: '16px',
+    width: '100px',
+    height: '100px',
+    position: 'relative',
+    boxShadow: isOn ? '0px 0px 15px 5px rgba(255, 215, 0, 0.5)' : 'none',
+  });
+
   return (
     <div className='d-flex row justify-content-center align-items-center'>
       {devices.map((device) => {
         let Icon;
+        let customStyle;
         switch (device.name.toLowerCase()) {
           case 'fan':
-            Icon = FaFan;
+            Icon = () => (
+              <img
+                src={deviceStates[device._id]
+                  ? "https://png.pngtree.com/png-clipart/20190614/original/pngtree-charging-fan-vector-icon-png-image_3720337.jpg"
+                  : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaXTXuP2taUTas5bWq4SuBG9MMa_ZlRnD-Bg&s"}
+                alt="Fan"
+                style={{ width: '100px', height: '100px' }}
+              />
+            );
             break;
           case 'tv':
             Icon = FaTv;
+            customStyle = tvStyle(deviceStates[device._id]);
             break;
           case 'bulb':
             Icon = FaLightbulb;
+            customStyle = bulbStyle(deviceStates[device._id]);
             break;
           default:
-            Icon = FaFan; // Default icon
+            Icon = FaFan;
         }
         return (
           <div style={getContainerStyle(deviceStates[device._id])} key={device._id} className='col-6 mb-3'>
             <h4 style={{ color: '#284680' }}>{device.name}</h4>
             <div
-              style={{
-                width: '100px',
-                height: '100px',
-                backgroundColor: '#3E7EF7',
-                borderRadius: '16px'
-              }}
+              style={customStyle || { width: '100px', height: '100px', backgroundColor: '#3E7EF7', borderRadius: '16px' }}
               className='d-flex justify-content-center align-items-center'
             >
               <Icon style={{ ...iconStyle, color: '#fff' }} />
