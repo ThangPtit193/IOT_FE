@@ -2,44 +2,40 @@ import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { getDeviceByTime } from '../../data/repositories/api';
-import { convertToVietnamTime } from '../../data/helper';
+import { convertDateInput, convertToVietnamTime } from '../../data/helper';
 
 const Device: React.FC = () => {
 
-    const [startDateTime, setStartDateTime] = useState<Date | null>(null); 
-    const [endDateTime, setEndDateTime] = useState<Date | null>(null);
     const [filteredData, setFilteredData] = useState<any[]>([]); // Dữ liệu đã lọc để hiển thị
     const [page, setPage] = useState<string>('1'); // Trang hiện tại
     const [pageSize, setPageSize] = useState<string>('10'); // Kích thước trang
     const [totalCount, setTotalCount] = useState<number>(0); // Tổng số bản ghi
-    const [startInput, setStartInput] = useState<Date | null>(null);
-    const [endInput, setEndInput] = useState<Date | null>(null);
-
+    const [startInput, setStartInput] = useState<string>('');
+    const [startBE, setStartBe] = useState<string>('')
 
     useEffect(() => {
         const fetchFirst = async () => {
             try {
                 const resAll = await getDeviceByTime({
-                    startTime: startDateTime ? startDateTime.toISOString() : '',
-                    endTime: endDateTime ? endDateTime.toISOString() : '',
+                    startTime: startInput ? startInput : '',
                     page: '',
                     pageSize: '',
                 });
                 setTotalCount(resAll.data.length); // Lưu tổng số bản ghi vào state totalCount
-                // console.log("total", resAll.data.length);
+                console.log("total", resAll.data.length);
             } catch (error) {
                 console.error('Lỗi khi lấy dữ liệu:', error);
             }
         }
         fetchFirst();
-    },[startDateTime, endDateTime])
+    },[startInput])
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const result = await getDeviceByTime({
-                    startTime: startDateTime ? startDateTime.toISOString() : '',
-                    endTime: endDateTime ? endDateTime.toISOString() : '',
+                    
+                    startTime: startInput ? startInput : '',
                     page: page,
                     pageSize: pageSize,
                 });
@@ -51,43 +47,29 @@ const Device: React.FC = () => {
         };
 
         fetchData();
-    }, [page, pageSize, startDateTime, endDateTime]);
+    }, [page, pageSize, startInput]);
 
     const handleSearch = () => {
-        setStartDateTime(startInput)
-        setEndDateTime(endInput);
+        if(!startBE) return;
+        setStartInput(startBE);
     };
 
     const changePageSize = (e:React.ChangeEvent<HTMLSelectElement> ) => {
         setPageSize(e.target.value);
         setPage('1')
     }
-    
+
     const totalPages = Math.ceil(totalCount / Number(pageSize));
     
     return (
         <div className="container-fluid">
             <div className="filter-section">
-                <DatePicker
-                    selected={startInput}
-                    onChange={(date) => setStartInput(date)}
-                    showTimeSelect
-                    timeFormat="HH:mm:ss"
-                    timeIntervals={1}
-                    dateFormat="dd/MM/yyyy HH:mm:ss"
-                    timeCaption="Giờ"
-                    placeholderText="Chọn thời gian bắt đầu"
-                />
-                <DatePicker
-                    selected={endInput}
-                    onChange={(date) => setEndInput(date)}
-                    showTimeSelect
-                    timeFormat="HH:mm:ss"
-                    timeIntervals={1}
-                    dateFormat="dd/MM/yyyy HH:mm:ss"
-                    timeCaption="Giờ"
-                    placeholderText="Chọn thời gian kết thúc"
-                />
+            <input
+                type="text"
+                value={startBE}
+                onChange={(e) => setStartBe(e.target.value)}
+                placeholder="Nhập giờ hoặc ngày tháng"
+            />
                 <button
                     className="filter-button"
                     onClick={handleSearch}

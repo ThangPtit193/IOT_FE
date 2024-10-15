@@ -19,3 +19,8 @@ export const convertToVietnamTime = (utcDate: string) => {
 
   return `${timePart} ${datePart}`.replace(/\//g, '/');
 };
+export const convertDateInput = (dateString: string) => {
+  const [day, month, yearAndTime] = dateString.split('/');
+  const [year, time] = yearAndTime.split(' ');
+  return `${month}/${day}/${year} ${time}`;
+};
