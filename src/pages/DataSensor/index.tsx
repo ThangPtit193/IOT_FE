@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getDataByType } from '../../data/repositories/api';
+import { convertToVietnamTime } from '../../data/helper';
 
 interface SensorData {
   _id: string;
@@ -92,7 +93,12 @@ const DataSensor: React.FC = () => {
           <input
             type="text"
             id="search-input"
-            placeholder={`Tìm kiếm theo ${searchOption === 'temperature' ? 'nhiệt độ' : searchOption === 'humidity' ? 'độ ẩm' : 'ánh sáng'}`}
+            placeholder={`Tìm kiếm theo ${
+              searchOption === 'temperature' ? 'nhiệt độ' :
+              searchOption === 'humidity' ? 'độ ẩm' :
+              searchOption === 'light' ? 'ánh sáng' :
+              searchOption === 'createdAt' ? 'thời gian (DD/MM/YYYY HH:mm)' : ''
+            }`}
             value={searchTerm}
             onChange={handleSearchChange}
           />
@@ -104,6 +110,7 @@ const DataSensor: React.FC = () => {
             <option value="temperature">Nhiệt độ</option>
             <option value="humidity">Độ ẩm</option>
             <option value="light">Ánh sáng</option>
+            <option value="createdAt">Thời gian</option>
           </select>
           <button
             className="filter-button"
@@ -147,7 +154,7 @@ const DataSensor: React.FC = () => {
                 <td>{Math.ceil(row.temperature)}</td>
                 <td>{row.humidity}</td>
                 <td>{row.light}</td>
-                <td>{new Date(row.createdAt).toLocaleString('vi-VN')}</td>
+                <td>{convertToVietnamTime(row.createdAt)}</td>
               </tr>
             )) : (
               <tr>
