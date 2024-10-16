@@ -7,6 +7,7 @@ interface SensorData {
   temperature: number;
   humidity: number;
   light: number;
+  fog: number;
   createdAt: string;
 }
 
@@ -23,6 +24,7 @@ const DataSensor: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0); // Tổng số bản ghi
   const [searchOption, setSearchOption] = useState<string>('temperature');
 
+  // Lấy tổng số bản ghi
   useEffect(() => {
     const fetch = async () => {
       const totalRes = await getDataByType({
@@ -32,13 +34,14 @@ const DataSensor: React.FC = () => {
         sortBy: sortBy,
         page: '',
         pageSize: '',
-      })
+      });
       console.log('total', totalRes.data.length);
-      setTotalCount(totalRes.data.length)
-    }
-    fetch()
+      setTotalCount(totalRes.data.length);
+    };
+    fetch();
   }, [content, searchBy, orderBy, sortBy]);
 
+  // Lấy dữ liệu theo trang và các tiêu chí tìm kiếm
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -59,6 +62,7 @@ const DataSensor: React.FC = () => {
     fetchData();
   }, [content, searchBy, orderBy, sortBy, page, pageSize]);
 
+  // Sắp xếp bảng
   const sortTable = (key: keyof SensorData) => {
     let direction: 'asc' | 'desc' = 'asc';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -69,16 +73,19 @@ const DataSensor: React.FC = () => {
     setSortConfig({ key, direction });
   };
 
+  // Xử lý thay đổi ô tìm kiếm
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
+  // Xử lý tìm kiếm khi nhấn nút
   const handleSearchClick = () => {
     setSearchBy(searchOption);
     setContent(searchTerm);
     setPage('1');
   };
 
+  // Thay đổi kích thước trang
   const changePageSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setPageSize(e.target.value);
     setPage('1');
@@ -93,12 +100,11 @@ const DataSensor: React.FC = () => {
           <input
             type="text"
             id="search-input"
-            placeholder={`Tìm kiếm theo ${
-              searchOption === 'temperature' ? 'nhiệt độ' :
+            placeholder={`Tìm kiếm theo ${searchOption === 'temperature' ? 'nhiệt độ' :
               searchOption === 'humidity' ? 'độ ẩm' :
-              searchOption === 'light' ? 'ánh sáng' :
-              searchOption === 'createdAt' ? 'thời gian (DD/MM/YYYY HH:mm)' : ''
-            }`}
+                searchOption === 'light' ? 'ánh sáng' :
+                  searchOption === 'createdAt' ? 'thời gian (DD/MM/YYYY HH:mm)' : ''
+              }`}
             value={searchTerm}
             onChange={handleSearchChange}
           />
@@ -110,6 +116,7 @@ const DataSensor: React.FC = () => {
             <option value="temperature">Nhiệt độ</option>
             <option value="humidity">Độ ẩm</option>
             <option value="light">Ánh sáng</option>
+
             <option value="createdAt">Thời gian</option>
           </select>
           <button
@@ -120,6 +127,7 @@ const DataSensor: React.FC = () => {
             Tìm kiếm
           </button>
         </div>
+
         <div className="pagination-control">
           <label htmlFor="itemsPerPage">Số dòng trên mỗi trang: </label>
           <select value={pageSize} onChange={changePageSize}>
@@ -128,6 +136,7 @@ const DataSensor: React.FC = () => {
             <option value={20}>20</option>
           </select>
         </div>
+
         <table className="table table-hover mt-4" id="sensorTable">
           <thead>
             <tr>
@@ -144,25 +153,31 @@ const DataSensor: React.FC = () => {
                 <button onClick={() => sortTable('light')}>&#9650;</button>
                 <button onClick={() => sortTable('light')}>&#9660;</button>
               </th>
+              <th scope="col">Sương mù ()
+                <button onClick={() => sortTable('fog')}>&#9650;</button>
+                <button onClick={() => sortTable('fog')}>&#9660;</button>
+              </th>
               <th scope="col">Thời gian</th>
             </tr>
           </thead>
           <tbody>
-            {dataFilter.length > 0 ? dataFilter.map((row, index) => (
+            {dataFilter.length > 0 ? dataFilter.map((row) => (
               <tr key={row._id}>
                 <td>{row._id}</td>
                 <td>{Math.ceil(row.temperature)}</td>
                 <td>{row.humidity}</td>
                 <td>{row.light}</td>
+                <td>{row.fog}</td> {/* Hiển thị giá trị fog */}
                 <td>{convertToVietnamTime(row.createdAt)}</td>
               </tr>
             )) : (
               <tr>
-                <td colSpan={5} style={{ textAlign: 'center' }}>Không có dữ liệu</td>
+                <td colSpan={6} style={{ textAlign: 'center' }}>Không có dữ liệu</td>
               </tr>
             )}
           </tbody>
         </table>
+
         <div className="pagination-controls" style={{ display: 'flex', justifyContent: 'flex-end', margin: '10px 0' }}>
           <button
             onClick={() => setPage((prev) => (parseInt(prev) - 1).toString())} // Trang trước
