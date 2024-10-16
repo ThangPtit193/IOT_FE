@@ -3,18 +3,22 @@ import Overview from './Overview';
 import Chart from './Chart';
 import Device, { DeviceSchema } from './Device';
 import { initializeMqttClient, SensorData } from '../../data/repositories/mqtt';
+import { sendDataToDatabase } from '../../data/repositories/api';
 
 const Dashboard = () => {
   const [mqttData, setMqttData] = useState<SensorData>({ temperature: null, humidity: null, light: null, fog: null });
   const [dataSensor, setDataSensor] = useState<SensorData[]>([]);
   const [devices, setDevices] = useState<DeviceSchema[]>([]);
 
+  let newDataReal: SensorData;
   const initializeClient = useCallback(() => {
     const client = initializeMqttClient((newData) => {
+      newDataReal = newData;
+      console.log("newDataaReal", newDataReal);
       setMqttData(newData);
       setDataSensor((prevData) => [...prevData, newData]);
     });
-    return client; // Giữ lại client để sử dụng trong destructor
+    return client;
   }, []);
 
   useEffect(() => {
@@ -22,9 +26,9 @@ const Dashboard = () => {
     getDevices();
 
     return () => {
-      client.end(); // Kết thúc client khi component unmount
+      client.end();
     };
-  }, [initializeClient]); // Chỉ chạy lại effect khi initializeClient thay đổi
+  }, [initializeClient]);
 
   const getDevices = useCallback(async () => {
     try {
@@ -33,13 +37,22 @@ const Dashboard = () => {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      console.log(data); // Hiển thị dữ liệu nhận được
+      console.log(data);
       setDevices(data.data);
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
     }
   }, []); // Không có dependencies nên chỉ chạy một lần khi mount
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if(!newDataReal) return;
+  //     console.log("mqtt", newDataReal);
+  //     sendDataToDatabase(newDataReal);
+  //     console.log("gửi data thành công")
+  //   }, 2000); 
 
+  //   return () => clearInterval(interval);
+  // }, []);
   return (
     <div>
       <Overview mqttData={mqttData} />
