@@ -1,8 +1,8 @@
 import React, { useState, useEffect, CSSProperties } from 'react';
-import { FaTv, FaLightbulb, FaToggleOn, FaToggleOff } from 'react-icons/fa';
+import { FaTv, FaLightbulb, FaToggleOn, FaToggleOff, FaFan } from 'react-icons/fa';
 import mqtt, { MqttClient } from 'mqtt';
 import { saveHistoryToDatabase } from '../../data/repositories/api';
-import FaFan from '../../assets/images/FaFan.png';
+// import FaFan from '../../assets/images/FaFan.png';
 
 export interface DeviceSchema {
   _id: string;
@@ -22,6 +22,8 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
   const [client, setClient] = useState<MqttClient | null>(null);
   const [deviceStates, setDeviceStates] = useState<{ [key: string]: boolean }>({});
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
+  const [numberNhay, setNumberNhay] = useState<number>(0);
+  const [alert, setAlert] = useState<boolean>(false);
 
   useEffect(() => {
     const host = '667e33c453fe4f028d4486b0f821713b.s1.eu.hivemq.cloud';
@@ -43,7 +45,29 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
 
     mqttClient.on('connect', () => {
       console.log('Device component connected to MQTT broker');
+
+      // Đăng ký các topic esp8266/alert và esp8266/number
+      mqttClient.subscribe('esp8266/alert', { qos: 0 });
+      mqttClient.subscribe('esp8266/number', { qos: 0 });
     });
+
+    mqttClient.on('message', (topic, message) => {
+      // Xử lý tin nhắn từ các topic
+      const msg = message.toString();
+      if (topic === 'esp8266/alert') {
+        // Xử lý giá trị boolean từ topic esp8266/alert
+        const alertState = JSON.parse(msg).state;
+        setAlert(alertState);
+        console.log('Alert State:', alertState);
+      } else if (topic === 'esp8266/number') {
+        // Xử lý giá trị từ topic esp8266/number
+        const jsonData = JSON.parse(msg); // Phân tích cú pháp JSON
+        const alertCount = jsonData.alert_count; // Lấy giá trị alert_count
+        setNumberNhay(alertCount);
+        console.log('Alert Count:', alertCount);
+      }
+    });
+
 
   }, []);
 
@@ -140,6 +164,25 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
 
   return (
     <div className='d-flex row justify-content-center align-items-center'>
+      <div>{numberNhay}</div>
+      <div style={getContainerStyle(alert)} className='col-6 mb-3'>
+        <h4 style={{ color: '#284680' }}>Alert</h4>
+        <div
+          style={{}}
+          className='d-flex justify-content-center align-items-center'
+        >
+          <FaFan style={{ ...iconStyle }} />
+        </div>
+
+        <div
+          // onClick={() => toggleDevice(device._id, device.name)}
+          style={{ ...buttonStyle, color: alert ? '#fff' : '#6c757d' }}
+        >
+
+          {alert ? <FaToggleOn /> : <FaToggleOff />}
+
+        </div>
+      </div>
       {devices.map((device) => {
         let Icon;
         let customStyle;

@@ -153,7 +153,7 @@ const DataSensor: React.FC = () => {
                 <button onClick={() => sortTable('light')}>&#9650;</button>
                 <button onClick={() => sortTable('light')}>&#9660;</button>
               </th>
-              <th scope="col">Sương mù ()
+              <th scope="col">Sương mù
                 <button onClick={() => sortTable('fog')}>&#9650;</button>
                 <button onClick={() => sortTable('fog')}>&#9660;</button>
               </th>
