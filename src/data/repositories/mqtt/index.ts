@@ -1,6 +1,6 @@
 import mqtt from 'mqtt'; // Import the MQTT library
 import { sendDataToDatabase } from '../api'; // Import the function to send data to the database (commented out for now)
-
+import { useState } from 'react';
 // Define MQTT connection parameters
 const host = '667e33c453fe4f028d4486b0f821713b.s1.eu.hivemq.cloud';
 const port = 8884;
@@ -71,15 +71,6 @@ export const initializeMqttClient = (onDataReceived: (data: SensorData) => void)
         console.log("Sensor data:", data); // Log the complete sensor data
         onDataReceived({ ...data }); // Invoke the callback with the sensor data
 
-        // Uncomment to send data to the database
-        // try {
-        //   await sendDataToDatabase({ ...data });
-        //   console.log('Data sent to database successfully');
-        // } catch (error) {
-        //   console.error('Failed to send data to database:', error);
-        // }
-
-        // Reset the data for the next reading
         data = {
           temperature: null,
           humidity: null,

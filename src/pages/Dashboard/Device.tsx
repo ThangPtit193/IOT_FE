@@ -58,13 +58,13 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
         // Xử lý giá trị boolean từ topic esp8266/alert
         const alertState = JSON.parse(msg).state;
         setAlert(alertState);
-        console.log('Alert State:', alertState);
+        // console.log('Alert State:', alertState);
       } else if (topic === 'esp8266/number') {
         // Xử lý giá trị từ topic esp8266/number
         const jsonData = JSON.parse(msg); // Phân tích cú pháp JSON
         const alertCount = jsonData.alert_count; // Lấy giá trị alert_count
         setNumberNhay(alertCount);
-        console.log('Alert Count:', alertCount);
+        // console.log('Alert Count:', alertCount);
       }
     });
 
@@ -164,9 +164,9 @@ const Device = ({ devices }: { devices: DeviceSchema[] }) => {
 
   return (
     <div className='d-flex row justify-content-center align-items-center'>
-      <div>{numberNhay}</div>
       <div style={getContainerStyle(alert)} className='col-6 mb-3'>
-        <h4 style={{ color: '#284680' }}>Alert</h4>
+        <div>Số lần cảnh báo: {numberNhay}</div>
+        <h4 style={{ color: '#284680' }}>alert</h4>
         <div
           style={{}}
           className='d-flex justify-content-center align-items-center'
