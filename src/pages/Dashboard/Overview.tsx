@@ -15,7 +15,7 @@ const Overview = ({ mqttData }: { mqttData: any }) => {
   return (
     <div className="row mx-2">
 
-      <div className="col-xl-4 col-md-6 mb-4">
+      <div className="col-xl-3 col-md-6 mb-4">
         <div className="card border-left-primary shadow h-100 py-2">
           <div className="card-body">
             <div className="row no-gutters align-items-center">
@@ -51,8 +51,44 @@ const Overview = ({ mqttData }: { mqttData: any }) => {
           </div>
         </div>
       </div>
+      <div className="col-xl-3 col-md-6 mb-4">
+        <div className="card border-left-primary shadow h-100 py-2">
+          <div className="card-body">
+            <div className="row no-gutters align-items-center">
+              <div className="col mr-2">
+                <div className="text-xs font-weight-bold text-uppercase mb-1" style={{ color: '#29245A' }}>
+                  Sương mù
+                </div>
+                <div className="row no-gutters align-items-center">
+                  <div className="col-2" style={{ marginLeft: '12px' }}>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">{Math.ceil(mqttData.fog)}</div>
+                  </div>
+                  <div className="col-10" style={{ marginRight: '5px', width: '70%' }}>
+                    <div className="progress">
+                      <div
+                        className="progress-bar"
+                        role="progressbar"
+                        style={{
+                          width: `${temperaturePercentage}%`,
+                          background: 'linear-gradient(to right, #E7CFE7, #29245A)', // Gradient đỏ dần
+                        }}
+                        aria-valuenow={temperaturePercentage}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-auto">
+                <Image src={Heat} alt="Logo" height={50} width={50} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <div className="col-xl-4 col-md-6 mb-4">
+      <div className="col-xl-3 col-md-6 mb-4">
         <div className="card border-left-info shadow h-100 py-2">
           <div className="card-body">
             <div className="row no-gutters align-items-center">
@@ -88,7 +124,7 @@ const Overview = ({ mqttData }: { mqttData: any }) => {
         </div>
       </div>
 
-      <div className="col-xl-4 col-md-6 mb-4">
+      <div className="col-xl-3 col-md-6 mb-4">
         <div className="card border-left-warning shadow h-100 py-2">
           <div className="card-body">
             <div className="row no-gutters align-items-center">

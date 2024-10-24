@@ -1,50 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Overview from './Overview';
 import Chart from './Chart';
 import Device, { DeviceSchema } from './Device';
 import { initializeMqttClient, SensorData } from '../../data/repositories/mqtt';
+import { sendDataToDatabase } from '../../data/repositories/api';
 
 const Dashboard = () => {
-
-  const [mqttData, setMqttData] = useState<SensorData>({
-    temperature: null,
-    humidity: null,
-    light: null
-  });
-
+  const [mqttData, setMqttData] = useState<SensorData>({ temperature: null, humidity: null, light: null, fog: null });
   const [dataSensor, setDataSensor] = useState<SensorData[]>([]);
-
-  const [devices, setDevices] = useState<DeviceSchema[]>([])
-
-  useEffect(() => {
-
-
-    initializeMqttClient((newData) => {
+  const [devices, setDevices] = useState<DeviceSchema[]>([]);
+  // eslint-disable-next-line
+  let newDataReal: SensorData;
+  const initializeClient = useCallback(() => {
+    const client = initializeMqttClient((newData) => {
+      // eslint-disable-next-line
+      newDataReal = newData;
+      console.log("newDataaReal", newDataReal);
       setMqttData(newData);
       setDataSensor((prevData) => [...prevData, newData]);
     });
-
-    getDevices();
-
-
+    return client;
   }, []);
 
-  const getDevices = async () => {
+  useEffect(() => {
+    const client = initializeClient(); // Khởi tạo client
+    getDevices();
+
+    return () => {
+      client.end();
+    };
+  }, [initializeClient]);
+  
+  const getDevices = useCallback(async () => {
     try {
       const response = await fetch('http://localhost:3001/api/data/get-device');
-
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-
       const data = await response.json();
-      console.log(data); // Hiển thị dữ liệu nhận được
+      console.log(data);
       setDevices(data.data);
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
     }
-  };
+  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if(!newDataReal) return;
+  //     console.log("mqtt", newDataReal);
+  //     sendDataToDatabase(newDataReal);
+  //     console.log("gửi data thành công")
+  //   }, 2000); 
 
+  //   return () => clearInterval(interval);
+  // }, []);
   return (
     <div>
       <Overview mqttData={mqttData} />

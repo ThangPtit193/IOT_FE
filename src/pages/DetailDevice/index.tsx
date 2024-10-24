@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { getDeviceByTime } from '../../data/repositories/api';
-import { convertDateInput, convertToVietnamTime } from '../../data/helper';
+import { convertToVietnamTime } from '../../data/helper';
 
 const Device: React.FC = () => {
 
@@ -17,7 +16,7 @@ const Device: React.FC = () => {
         const fetchFirst = async () => {
             try {
                 const resAll = await getDeviceByTime({
-                    startTime: startInput ? startInput : '',
+                    startTime: startInput,
                     page: '',
                     pageSize: '',
                 });
@@ -35,7 +34,7 @@ const Device: React.FC = () => {
             try {
                 const result = await getDeviceByTime({
                     
-                    startTime: startInput ? startInput : '',
+                    startTime: startInput,
                     page: page,
                     pageSize: pageSize,
                 });
