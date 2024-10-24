@@ -9,10 +9,11 @@ const Dashboard = () => {
   const [mqttData, setMqttData] = useState<SensorData>({ temperature: null, humidity: null, light: null, fog: null });
   const [dataSensor, setDataSensor] = useState<SensorData[]>([]);
   const [devices, setDevices] = useState<DeviceSchema[]>([]);
-
+  // eslint-disable-next-line
   let newDataReal: SensorData;
   const initializeClient = useCallback(() => {
     const client = initializeMqttClient((newData) => {
+      // eslint-disable-next-line
       newDataReal = newData;
       console.log("newDataaReal", newDataReal);
       setMqttData(newData);
@@ -29,7 +30,7 @@ const Dashboard = () => {
       client.end();
     };
   }, [initializeClient]);
-
+  
   const getDevices = useCallback(async () => {
     try {
       const response = await fetch('http://localhost:3001/api/data/get-device');
@@ -42,7 +43,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
     }
-  }, []); // Không có dependencies nên chỉ chạy một lần khi mount
+  }, []);
   // useEffect(() => {
   //   const interval = setInterval(() => {
   //     if(!newDataReal) return;
